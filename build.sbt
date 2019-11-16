@@ -57,7 +57,7 @@ lazy val xercesImpl        = "xerces"                     % "xercesImpl"        
 lazy val simulacrum        = "org.typelevel" %% "simulacrum"     % simulacrumVersion
 
 
-lazy val utils = project
+lazy val utilsMain = project
   .in(file("."))
   .enablePlugins(ScalaUnidocPlugin, SbtNativePackager, WindowsPlugin, JavaAppPackaging, LauncherJarPlugin)
   .disablePlugins(RevolverPlugin)
@@ -66,8 +66,8 @@ lazy val utils = project
 //    buildInfoPackage := "es.weso.shaclex.buildinfo" 
 //  )
   .settings(commonSettings, packagingSettings, publishSettings, ghPagesSettings, wixSettings)
-  .aggregate(sutils, typing, validating, utilsTest)
-  .dependsOn(sutils, typing, validating, utilsTest)
+  .aggregate(sutils, typing, validating, utilsTest, utils)
+  .dependsOn(sutils, typing, validating, utilsTest, utils)
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(noDocProjects: _*),
     libraryDependencies ++= Seq(
@@ -137,6 +137,17 @@ lazy val utilsTest = project
   .in(file("modules/validating"))
   .disablePlugins(RevolverPlugin)
   .dependsOn(sutils % "test -> test; compile -> compile")
+  .settings(commonSettings, publishSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      catsCore,
+      catsKernel,
+      catsMacros
+    )
+  )
+
+lazy val utils = project
+  .in(file("modules/utils"))
   .settings(commonSettings, publishSettings)
   .settings(
     libraryDependencies ++= Seq(

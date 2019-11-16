@@ -16,35 +16,12 @@ install:
   - gem install sass
   - gem install jekyll -v 3.8.5  
 
-script:
-  - sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM benchmark/test;
-  - sbt ++$TRAVIS_SCALA_VERSION benchmark/test;
-  - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
-    then
-      sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
-      sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
-    else echo "Skipping code coverage reporting and docs on 2.13";
-    fi
-  - if [[ "$TRAVIS_SCALA_VERSION" == 2.13.* ]];
-    then
-      sbt ++$TRAVIS_SCALA_VERSION genericSimpleJVM/test;
-    else echo "Skipping generic-simple on 2.11 and 2.12";
-    fi
-  - if [[ "$TRAVIS_BRANCH" == "scalajs" ]];
-    then
-      sbt ++$TRAVIS_SCALA_VERSION clean validateJS;
-    else echo "Skipping Scala.js build";
-    fi
 
-  # See http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
-  # Tricks to avoid unnecessary cache updates
-  - find $HOME/.sbt -name "*.lock" | xargs rm
-
-#before_cache:
+before_cache:
   # Cleanup the cached directories to avoid unnecessary cache updates
- # - rm -fv $HOME/.ivy2/.sbt.ivy.lock
- # - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
- # - find $HOME/.sbt        -name "*.lock"               -print -delete
+  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
 
 jdk:
   - oraclejdk12

@@ -1,4 +1,6 @@
 package es.weso.utils
+// import scala.collection.compat._
+import es.weso.utils.internals.CollectionCompat._
 
 object SetUtils {
 

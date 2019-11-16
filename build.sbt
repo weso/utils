@@ -1,25 +1,30 @@
+lazy val scala212 = "2.12.10"
+lazy val scala213 = "2.13.1"
+lazy val supportedScalaVersions = List(scala212, scala213)
+
 // Dependency versions
-lazy val antlrVersion          = "4.7.1"
-lazy val catsVersion           = "2.0.0"
-lazy val commonsTextVersion    = "1.8"
-lazy val circeVersion          = "0.12.0-RC3"
-lazy val diffsonVersion        = "4.0.0"
+lazy val antlrVersion            = "4.7.1"
+lazy val catsVersion             = "2.0.0"
+lazy val commonsTextVersion      = "1.8"
+lazy val circeVersion            = "0.12.0-RC3"
+lazy val diffsonVersion          = "4.0.0"
 // lazy val effVersion            = "4.6.1"
-lazy val jenaVersion           = "3.13.1"
-lazy val jgraphtVersion        = "1.3.1"
-lazy val logbackVersion        = "1.2.3"
-lazy val loggingVersion        = "3.9.2"
-lazy val rdf4jVersion          = "3.0.0"
-lazy val scalacheckVersion     = "1.14.0"
-lazy val scalacticVersion      = "3.0.8"
-lazy val scalaTestVersion      = "3.0.8"
-lazy val scalaGraphVersion     = "1.11.5"
-lazy val scalatagsVersion      = "0.6.7"
-lazy val scallopVersion        = "3.3.1"
-lazy val seleniumVersion       = "2.35.0"
-lazy val sextVersion           = "0.2.6"
-lazy val typesafeConfigVersion = "1.3.4"
-lazy val xercesVersion         = "2.12.0"
+lazy val jenaVersion             = "3.13.1"
+lazy val jgraphtVersion          = "1.3.1"
+lazy val logbackVersion          = "1.2.3"
+lazy val loggingVersion          = "3.9.2"
+lazy val rdf4jVersion            = "3.0.0"
+lazy val scalacheckVersion       = "1.14.0"
+lazy val scalacticVersion        = "3.0.8"
+lazy val scalaTestVersion        = "3.0.8"
+lazy val scalaGraphVersion       = "1.11.5"
+lazy val scalatagsVersion        = "0.6.7"
+lazy val scallopVersion          = "3.3.1"
+lazy val seleniumVersion         = "2.35.0"
+lazy val sextVersion             = "0.2.6"
+lazy val typesafeConfigVersion   = "1.3.4"
+lazy val xercesVersion           = "2.12.0"
+lazy val collectionCompatVersion = "2.1.2"
 
 // Compiler plugin dependency versions
 lazy val simulacrumVersion    = "1.0.0"
@@ -54,8 +59,8 @@ lazy val selenium          = "org.seleniumhq.selenium"    % "selenium-java"     
 lazy val sext              = "com.github.nikita-volkov"   % "sext"                 % sextVersion
 lazy val typesafeConfig    = "com.typesafe"               % "config"               % typesafeConfigVersion
 lazy val xercesImpl        = "xerces"                     % "xercesImpl"           % xercesVersion
-lazy val simulacrum        = "org.typelevel" %% "simulacrum"     % simulacrumVersion
-
+lazy val simulacrum        = "org.typelevel"              %% "simulacrum"          % simulacrumVersion
+lazy val collectionCompat  = "org.scala-lang.modules"     %% "scala-collection-compat" % collectionCompatVersion 
 
 /**
  * Some terrible hacks to work around Cats's decision to have builds for
@@ -97,10 +102,11 @@ lazy val typing = project
   .disablePlugins(RevolverPlugin)
   .settings(commonSettings, publishSettings)
   .settings(
+    crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
-      catsCore,
-      catsKernel,
-      catsMacros
+    catsCore,
+    catsKernel,
+    catsMacros
     )
   )
 
@@ -109,7 +115,8 @@ lazy val sutils = project
   .disablePlugins(RevolverPlugin)
   .settings(commonSettings, publishSettings)
   .settings(
-    libraryDependencies ++= Seq(
+    crossScalaVersions := supportedScalaVersions,
+        libraryDependencies ++= Seq(
 //      eff,
       circeCore,
       circeGeneric,
@@ -117,10 +124,20 @@ lazy val sutils = project
       catsCore,
       catsKernel,
       catsMacros,
+      collectionCompat,
       diffsonCirce,
       xercesImpl,
       commonsText
-    )
+    ),
+    unmanagedSourceDirectories in Compile ++= {
+      (unmanagedSourceDirectories in Compile).value.map { dir =>
+        val sv = scalaVersion.value
+        CrossVersion.partialVersion(sv) match {
+          case Some((2, 13)) => file(dir.getPath ++ "-2.13")
+          case _             => file(dir.getPath ++ "-2.12")
+        }
+      }
+    }
   )
 
 lazy val utilsTest = project
@@ -128,6 +145,7 @@ lazy val utilsTest = project
   .disablePlugins(RevolverPlugin)
   .settings(commonSettings, publishSettings)
   .settings(
+    crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
       circeCore,
       circeGeneric,
@@ -149,10 +167,11 @@ lazy val utilsTest = project
   .dependsOn(sutils % "test -> test; compile -> compile")
   .settings(commonSettings, publishSettings)
   .settings(
+    crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
-      catsCore,
-      catsKernel,
-      catsMacros
+    catsCore,
+    catsKernel,
+    catsMacros
     )
   )
 
@@ -160,6 +179,7 @@ lazy val utils = project
   .in(file("modules/utils"))
   .settings(commonSettings, publishSettings)
   .settings(
+    crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
       catsCore,
       catsKernel,
@@ -189,17 +209,31 @@ lazy val sharedDependencies = Seq(
 )
 
 lazy val packagingSettings = Seq(
-  mainClass in Compile        := Some("es.weso.shaclex.Main"),
-  mainClass in assembly       := Some("es.weso.shaclex.Main"),
+  mainClass in Compile        := None,
+  mainClass in assembly       := None,
   test in assembly            := {},
-  assemblyJarName in assembly := "shaclex.jar",
+  assemblyJarName in assembly := "utils.jar",
   packageSummary in Linux     := name.value,
   packageSummary in Windows   := name.value,
   packageDescription          := name.value
 )
 
+val compilerOptions = Seq(
+  "-deprecation",
+  "-encoding", "UTF-8",
+  "-feature",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-unchecked",
+  "-Ywarn-dead-code",
+  "-Ywarn-numeric-widen",
+  "-Xfuture",
+  "-Yno-predef",
+  "-Ywarn-unused-import"
+)
+
 lazy val compilationSettings = Seq(
-  scalaVersion := "2.13.1",
+  scalaVersion := scala213,
   // format: off
   scalacOptions ++= Seq(
     "-deprecation",                      // Emit warning and location for usages of deprecated APIs.
@@ -213,7 +247,6 @@ lazy val compilationSettings = Seq(
     "-Ywarn-dead-code",                  // Warn when dead code is identified.
     "-Xfatal-warnings",
     "-Ywarn-extra-implicit",             // Warn when more than one implicit parameter section is defined.
-    "-Ymacro-annotations"
   )
   // format: on
 )
@@ -239,25 +272,18 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   )
 )
 
-def antlrSettings(packageName: String) = Seq(
-  antlr4GenListener in Antlr4 := true,
-  antlr4GenVisitor in Antlr4  := true,
-  antlr4Dependency in Antlr4  := antlr4,
-  antlr4PackageName in Antlr4 := Some(packageName),
-)
-
 lazy val publishSettings = Seq(
   maintainer      := "Jose Emilio Labra Gayo <labra@uniovi.es>",
-  homepage        := Some(url("https://github.com/labra/shaclex")),
+  homepage        := Some(url("https://github.com/weso/utils")),
   licenses        := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
-  scmInfo         := Some(ScmInfo(url("https://github.com/labra/shaclex"), "scm:git:git@github.com:labra/shaclex.git")),
+  scmInfo         := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
   autoAPIMappings := true,
-  apiURL          := Some(url("http://labra.github.io/shaclex/latest/api/")),
+  apiURL          := Some(url("http://weso.github.io/utils/latest/api/")),
   pomExtra        := <developers>
                        <developer>
                          <id>labra</id>
                          <name>Jose Emilio Labra Gayo</name>
-                         <url>https://github.com/labra/</url>
+                         <url>https://weso.labra.es</url>
                        </developer>
                      </developers>,
   scalacOptions in doc ++= Seq(

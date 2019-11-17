@@ -3,6 +3,8 @@
 Scala utilities
 
 [![Build Status](https://travis-ci.org/weso/utils.svg?branch=master)](https://travis-ci.org/weso/utils)
+[![codecov](https://codecov.io/gh/weso/utils/branch/master/graph/badge.svg)](https://codecov.io/gh/weso/utils)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/92aef2157e844f48bca96e44b38bb0a7)](https://www.codacy.com/gh/weso/utils?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weso/utils&amp;utm_campaign=Badge_Grade)
 
 ## Introduction
 

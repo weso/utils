@@ -82,7 +82,7 @@ lazy val utilsMain = project
 //  )
   .settings(commonSettings, packagingSettings, publishSettings, ghPagesSettings, wixSettings)
   .aggregate(sutils, typing, validating, utilsTest, utils)
-  .dependsOn(sutils, typing, validating, utilsTest, utils)
+//  .dependsOn(sutils, typing, validating, utilsTest, utils)
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(noDocProjects: _*),
     libraryDependencies ++= Seq(
@@ -91,10 +91,13 @@ lazy val utilsMain = project
       scallop,
       typesafeConfig,
     ),
+    ThisBuild / turbo := true,
+    ThisBuild / scalaVersion := scala212,
     cancelable in Global      := true,
     fork                      := true,
-    parallelExecution in Test := false,
-    ThisBuild / turbo := true
+  //  parallelExecution in Test := false,
+    crossScalaVersions := Nil,
+    publish / skip := true
   )
 
 lazy val typing = project

@@ -132,7 +132,7 @@ lazy val sutils = project
       xercesImpl,
       commonsText
     ),
-    unmanagedSourceDirectories in Compile ++= {
+/*    unmanagedSourceDirectories in Compile ++= {
       (unmanagedSourceDirectories in Compile).value.map { dir =>
         val sv = scalaVersion.value
         CrossVersion.partialVersion(sv) match {
@@ -140,7 +140,7 @@ lazy val sutils = project
           case _             => file(dir.getPath ++ "-2.12")
         }
       }
-    }
+    } */
   )
 
 lazy val utilsTest = project

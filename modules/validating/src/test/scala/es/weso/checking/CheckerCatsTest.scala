@@ -1,6 +1,6 @@
 package es.weso.checking
 import java.util.concurrent.atomic.AtomicInteger
-
+import es.weso.utils.internal.CollectionCompat._
 import cats.implicits._
 import org.scalatest._
 

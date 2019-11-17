@@ -2,6 +2,7 @@ package es.weso.checking
 import cats._
 import data._
 import cats.implicits._
+import es.weso.utils.internal.CollectionCompat._
 
 abstract class CheckerCats extends Checker {
   implicit val logMonoid: Monoid[Log]

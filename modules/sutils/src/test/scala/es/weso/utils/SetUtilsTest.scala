@@ -1,6 +1,6 @@
 package es.weso.utils
 import org.scalatest._
-import es.weso.utils.internals.CollectionCompat._
+import es.weso.utils.internal.CollectionCompat._
 
 class SetUtilsTest extends FunSpec with Matchers {
 

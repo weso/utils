@@ -1,6 +1,6 @@
-package es.weso.utils.internals
+package es.weso.utils.internal
 
-private[utils] object CollectionCompat {
+private[weso] object CollectionCompat {
   type LazyList[A] = Stream[A]
   val LazyList = Stream
 

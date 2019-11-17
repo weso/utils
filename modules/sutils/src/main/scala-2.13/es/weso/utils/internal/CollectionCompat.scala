@@ -1,4 +1,4 @@
-package es.weso.utils.internals
+package es.weso.utils.internal
 
 private[utils] object CollectionCompat {
     type LazyList[A] = scala.collection.immutable.LazyList[A]

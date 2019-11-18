@@ -72,7 +72,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-lazy val utilsMain = project
+lazy val utilsRoot = project
   .in(file("."))
   .enablePlugins(ScalaUnidocPlugin, SbtNativePackager, WindowsPlugin, JavaAppPackaging, LauncherJarPlugin)
   .disablePlugins(RevolverPlugin)
@@ -81,7 +81,7 @@ lazy val utilsMain = project
 //    buildInfoPackage := "es.weso.shaclex.buildinfo" 
 //  )
   .settings(commonSettings, packagingSettings, publishSettings, ghPagesSettings, wixSettings)
-  .aggregate(sutils, typing, validating, utilsTest, utils)
+  .aggregate(typing, validating, utilsTest, utils)
 //  .dependsOn(sutils, typing, validating, utilsTest, utils)
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(noDocProjects: _*),
@@ -113,36 +113,6 @@ lazy val typing = project
     )
   )
 
-lazy val sutils = project
-  .in(file("modules/sutils"))
-  .disablePlugins(RevolverPlugin)
-  .settings(commonSettings, publishSettings)
-  .settings(
-    crossScalaVersions := supportedScalaVersions,
-        libraryDependencies ++= Seq(
-//      eff,
-      circeCore,
-      circeGeneric,
-      circeParser,
-      catsCore,
-      catsKernel,
-      catsMacros,
-      collectionCompat,
-      diffsonCirce,
-      xercesImpl,
-      commonsText
-    ),
-/*    unmanagedSourceDirectories in Compile ++= {
-      (unmanagedSourceDirectories in Compile).value.map { dir =>
-        val sv = scalaVersion.value
-        CrossVersion.partialVersion(sv) match {
-          case Some((2, 13)) => file(dir.getPath ++ "-2.13")
-          case _             => file(dir.getPath ++ "-2.12")
-        }
-      }
-    } */
-  )
-
 lazy val utilsTest = project
   .in(file("modules/utilsTest"))
   .disablePlugins(RevolverPlugin)
@@ -167,7 +137,7 @@ lazy val utilsTest = project
   lazy val validating = project
   .in(file("modules/validating"))
   .disablePlugins(RevolverPlugin)
-  .dependsOn(sutils % "test -> test; compile -> compile")
+  .dependsOn(utils % "test -> test; compile -> compile")
   .settings(commonSettings, publishSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
@@ -183,10 +153,18 @@ lazy val utils = project
   .settings(commonSettings, publishSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
-    libraryDependencies ++= Seq(
+        libraryDependencies ++= Seq(
+//      eff,
+      circeCore,
+      circeGeneric,
+      circeParser,
       catsCore,
       catsKernel,
-      catsMacros
+      catsMacros,
+      collectionCompat,
+      diffsonCirce,
+      xercesImpl,
+      commonsText
     )
   )
 

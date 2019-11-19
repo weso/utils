@@ -1,10 +1,16 @@
+dist: xenial
+
 language: scala
+
 scala:
    - 2.13.1
    - 2.12.10
 
-script:
-  - sbt clean coverage test coverageReport
+before_cache:
+  # Cleanup the cached directories to avoid unnecessary cache updates
+  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
 
 cache:
   directories:
@@ -19,16 +25,18 @@ install:
   - gem install sass
   - gem install jekyll -v 3.8.5  
 
-
-before_cache:
-  # Cleanup the cached directories to avoid unnecessary cache updates
-  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
-  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
-  - find $HOME/.sbt        -name "*.lock"               -print -delete
+script:
+  - sbt clean coverage test 
+  - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
+    then
+#      sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
+      sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
+    else 
+      echo "Skipping code coverage reporting and docs on 2.13";
 
 jdk:
   - oraclejdk12
   - openjdk12
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)  
+#after_success:
+#  - bash <(curl -s https://codecov.io/bash)  

@@ -29,7 +29,6 @@ script:
   - sbt clean coverage test 
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
     then
-#      sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite;
       sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
     else 
       echo "Skipping code coverage reporting and docs on 2.13";
@@ -37,6 +36,3 @@ script:
 jdk:
   - oraclejdk12
   - openjdk12
-
-#after_success:
-#  - bash <(curl -s https://codecov.io/bash)  

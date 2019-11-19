@@ -32,6 +32,7 @@ script:
       sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
     else 
       echo "Skipping code coverage reporting and docs on 2.13";
+    fi  
 
 jdk:
   - oraclejdk12

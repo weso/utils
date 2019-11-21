@@ -3,7 +3,7 @@ dist: xenial
 language: scala
 
 scala:
-   - 2.13.1
+#   - 2.13.1
    - 2.12.10
 
 before_cache:
@@ -29,11 +29,11 @@ script:
   - sbt clean coverage test 
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
     then
-      sbt ++$TRAVIS_SCALA_VERSION coverageReport && codecov;
+      sbt ++$TRAVIS_SCALA_VERSION coverageReport && bash <(curl -s https://codecov.io/bash);
     else 
       echo "Skipping code coverage reporting and docs on 2.13";
     fi  
 
 jdk:
-  - oraclejdk12
+#  - oraclejdk12
   - openjdk12

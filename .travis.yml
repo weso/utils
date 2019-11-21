@@ -26,10 +26,10 @@ install:
   - gem install jekyll -v 3.8.5  
 
 script:
-  - sbt clean coverage test 
+#  - sbt clean coverage test 
   - if [[ "$TRAVIS_SCALA_VERSION" != 2.13.* ]];
     then
-      sbt ++$TRAVIS_SCALA_VERSION coverageReport && bash <(curl -s https://codecov.io/bash);
+      sbt ++$TRAVIS_SCALA_VERSION  clean coverage test coverageReport && bash <(curl -s https://codecov.io/bash);
     else 
       echo "Skipping code coverage reporting and docs on 2.13";
     fi  

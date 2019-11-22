@@ -36,4 +36,4 @@ Contributors:
 
 Contributions are greatly appreciated.
 Please fork this repository and open a
-pull request to add more features or [submit issues](https://github.com/weso/sutils/issues)
+pull request to add more features or [submit issues](https://github.com/weso/utils/issues)

@@ -247,9 +247,8 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
     Resolver.bintrayRepo("weso", "weso-releases"),
     Resolver.sonatypeRepo("snapshots")
   ), 
-   coverageHighlighting := true, 
-   coverageEnabled := priorTo2_13(scalaVersion.value)
-  ) 
+  coverageHighlighting := true
+)
 
 lazy val publishSettings = Seq(
   maintainer      := "Jose Emilio Labra Gayo <labra@uniovi.es>",

@@ -62,10 +62,6 @@ lazy val xercesImpl        = "xerces"                     % "xercesImpl"        
 lazy val simulacrum        = "org.typelevel"              %% "simulacrum"          % simulacrumVersion
 lazy val collectionCompat  = "org.scala-lang.modules"     %% "scala-collection-compat" % collectionCompatVersion 
 
-/**
- * Some terrible hacks to work around Cats's decision to have builds for
- * different Scala versions depend on different versions of Discipline, etc.
- */
 def priorTo2_13(scalaVersion: String): Boolean =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, minor)) if minor < 13 => true

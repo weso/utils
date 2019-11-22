@@ -36,4 +36,4 @@ script:
 
 jdk:
   - oraclejdk12
-#  - openjdk12
+  - openjdk12

@@ -107,7 +107,7 @@ class CheckerCatsTest extends FunSpec with Matchers with OptionValues {
 
     def comp(x: Int): Check[(Int,Boolean)] = {
       counter.getAndIncrement;
-      println(s"Comp($x), steps: $counter")
+      // println(s"Comp($x), steps: $counter")
       if (x % 2 == 0) {
         ok((x, true))
       } else {

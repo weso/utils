@@ -36,6 +36,7 @@ lazy val antlr4            = "org.antlr"                  % "antlr4"            
 lazy val catsCore          = "org.typelevel"              %% "cats-core"           % catsVersion
 lazy val catsKernel        = "org.typelevel"              %% "cats-kernel"         % catsVersion
 lazy val catsMacros        = "org.typelevel"              %% "cats-macros"         % catsVersion
+lazy val catsEffect        = "org.typelevel"              %% "cats-effect"         % catsVersion
 lazy val circeCore         = "io.circe"                   %% "circe-core"          % circeVersion
 lazy val circeGeneric      = "io.circe"                   %% "circe-generic"       % circeVersion
 lazy val circeParser       = "io.circe"                   %% "circe-parser"        % circeVersion
@@ -157,6 +158,7 @@ lazy val utils = project
       catsCore,
       catsKernel,
       catsMacros,
+      catsEffect,
       collectionCompat,
       diffsonCirce,
       xercesImpl,

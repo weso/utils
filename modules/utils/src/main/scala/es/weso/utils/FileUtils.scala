@@ -45,7 +45,7 @@ object FileUtils {
     new File(path + "/" + name + "." + ext)
   }
 
-  private def splitExtension(str: String): (String, String) = {
+  def splitExtension(str: String): (String, String) = {
     val splits = str.split('.')
     (splits.init.mkString("."), splits.last)
   }

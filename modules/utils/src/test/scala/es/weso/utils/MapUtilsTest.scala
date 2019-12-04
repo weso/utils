@@ -21,5 +21,33 @@ class MapUtilsTest extends FunSpec with Matchers {
     }
   }
 
+  describe("MapUtils combineMaps") {
+    it(s"Should combine map") {
+      val mm: Map[String,Int] = Map(
+        "a" -> 1,
+        "b" -> 2,
+        "c" -> 3,
+      )
+      val mm1: Map[String,Int] = Map(
+        "a" -> 4,
+        "b" -> 5,
+        "c" -> 6,
+      )
+      val mm2: Map[String,Int] = Map(
+        "d" -> 7,
+      )
+
+      val comb: Map[String, Int] = combineMaps(List(mm, mm1, mm2))
+
+      comb should be(
+        Map(
+          "a" -> 5,
+          "b" -> 7,
+          "c" -> 9,
+          "d" -> 7,
+        )
+      )
+    }
+  }
 
 }

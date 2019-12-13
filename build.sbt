@@ -24,7 +24,7 @@ lazy val seleniumVersion         = "2.35.0"
 lazy val sextVersion             = "0.2.6"
 lazy val typesafeConfigVersion   = "1.3.4"
 lazy val xercesVersion           = "2.12.0"
-lazy val collectionCompatVersion = "2.1.2"
+lazy val collectionCompatVersion = "2.1.3"
 
 // Compiler plugin dependency versions
 lazy val simulacrumVersion    = "1.0.0"

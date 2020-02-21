@@ -4,8 +4,10 @@ import org.scalatest._
 import cats._
 import cats.implicits._
 import TypingResult._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class TypingResultTest extends FunSpec with Matchers {
+class TypingResultTest extends AnyFunSpec with Matchers {
 
   case class Er(s: String)
   case class Ev(e: String)

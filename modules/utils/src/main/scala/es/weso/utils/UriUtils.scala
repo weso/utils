@@ -1,11 +1,9 @@
 package es.weso.utils
 
 import java.net.URI
-
-import cats.implicits._
-
 import scala.io.Source
 import scala.util.Try
+import cats.effect.IO
 
 object UriUtils {
   /**
@@ -13,16 +11,16 @@ object UriUtils {
     * @param uri
     * @return Contents
     */
-  def derefUri(uri: URI): Either[String,String] = {
-    Either.fromTry(
+  // TODO: Use a more functional approach  
+  def derefUri(uri: URI): IO[String] = {
       Try{
         val urlCon = uri.toURL.openConnection()
         urlCon.setConnectTimeout(4000)
         urlCon.setReadTimeout(2000)
         val is = urlCon.getInputStream()
         Source.fromInputStream(is).mkString
-      }
-    ).leftMap(e => s"derefUri($uri): Error: ${e.getMessage}")
+      }.fold(e => IO.raiseError(e), IO(_))
+
   }
 
 }

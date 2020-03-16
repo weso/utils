@@ -3,14 +3,15 @@ import java.util.concurrent.atomic.AtomicInteger
 import es.weso.utils.internal.CollectionCompat._
 import cats.implicits._
 import org.scalatest._
+import cats.effect.IO
 
 class CheckerCatsTest extends FunSpec with Matchers with OptionValues {
 
   import CheckerCatsStr._
 
-  def runValue_(c:Check[Int]): Either[Err,Int] = runValue(c)(c0)(e0)
-  def runLog_(c:Check[Int]): Log = runLog(c)(c0)(e0)
-  def runValueFlag(c:Check[(Int,Boolean)]): Either[Err,(Int,Boolean)] = runValue(c)(c0)(e0)
+  def runValue_(c:Check[Int]): IO[Either[Err,Int]] = runValue(c)(c0)(e0)
+  def runLog_(c:Check[Int]): IO[Log] = runLog(c)(c0)(e0)
+  def runValueFlag(c:Check[(Int,Boolean)]): IO[Either[Err,(Int,Boolean)]] = runValue(c)(c0)(e0)
 
     ignore(s"Checker Cats") {
       it("Should be able to return a value") {
@@ -129,7 +130,9 @@ class CheckerCatsTest extends FunSpec with Matchers with OptionValues {
                             stepsExpected: Int): Unit = {
       it(msg) {
         counter.set(0)
-        runValueFlag(checkSomeFlag(ls, check, last)).fold(e => fail(s"Error: $e"), v => {
+        runValueFlag(checkSomeFlag(ls, check, last)).
+        unsafeRunSync.
+        fold(e => fail(s"Error: $e"), v => {
           v should be(expected)
           counter.get should equal(stepsExpected)
         })
@@ -166,7 +169,9 @@ class CheckerCatsTest extends FunSpec with Matchers with OptionValues {
                            stepsExpected: Int): Unit = {
       it(msg) {
         counter.set(0)
-        runValueFlag(checkAllFailFAtFirstFlag(ls, check, last)).fold(e => fail(s"Error: $e"), v => {
+        runValueFlag(checkAllFailFAtFirstFlag(ls, check, last)).
+        unsafeRunSync.
+        fold(e => fail(s"Error: $e"), v => {
           v should be(expected)
           counter.get should equal(stepsExpected)
         })
@@ -203,7 +208,9 @@ class CheckerCatsTest extends FunSpec with Matchers with OptionValues {
                            stepsExpected: Int): Unit = {
       it(msg) {
         counter.set(0)
-        runValueFlag(checkAllFlag(ls, check, last)).fold(e => fail(s"Error: $e"), v => {
+        runValueFlag(checkAllFlag(ls, check, last)).
+        unsafeRunSync.
+        fold(e => fail(s"Error: $e"), v => {
           v should be(expected)
           counter.get should equal(stepsExpected)
         })
@@ -234,7 +241,9 @@ class CheckerCatsTest extends FunSpec with Matchers with OptionValues {
                            last: => Int,
                            expected: (Int,Boolean)): Unit = {
       it(msg) {
-        runValueFlag(checkSequenceFlag(ls, last)).fold(e => fail(s"Error: $e"), v => {
+        runValueFlag(checkSequenceFlag(ls, last)).
+        unsafeRunSync.
+        fold(e => fail(s"Error: $e"), v => {
           v should be(expected)
         })
       }

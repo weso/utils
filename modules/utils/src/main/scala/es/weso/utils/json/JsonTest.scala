@@ -6,8 +6,9 @@ import cats.implicits._
 import io.circe.syntax._
 import io.circe.parser._
 import JsonCompare._
+import org.scalatest.funspec.AnyFunSpec
 
-trait JsonTest extends FunSpec {
+trait JsonTest extends AnyFunSpec {
 
  def decodeJsonSchemaEncodeEquals[A: Encoder: Decoder: Show](str: String): Unit = {
     for {

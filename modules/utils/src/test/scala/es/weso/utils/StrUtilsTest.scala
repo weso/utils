@@ -1,9 +1,10 @@
 package es.weso.utils
 
-import org.scalatest._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 import StrUtils._
 
-class StrUtilsTest extends FunSpec with Matchers {
+class StrUtilsTest extends AnyFunSpec with Matchers {
 
   describe("StrUtils unescape") {
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\tpepe", "\tpepe")

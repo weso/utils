@@ -1,13 +1,13 @@
 package es.weso.utils.json
 import io.circe._
-import org.scalatest._
+import org.scalatest.funspec._
 import cats._
 import cats.implicits._
 import io.circe.syntax._
 import io.circe.parser._
 import JsonCompare._
 
-trait JsonTest extends FunSpec {
+trait JsonTest extends AnyFunSpec {
 
  def decodeJsonSchemaEncodeEquals[A: Encoder: Decoder: Show](str: String): Unit = {
     for {

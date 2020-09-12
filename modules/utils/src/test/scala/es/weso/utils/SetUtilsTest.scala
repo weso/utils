@@ -1,8 +1,9 @@
 package es.weso.utils
-import org.scalatest._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 import es.weso.utils.internal.CollectionCompat._
 
-class SetUtilsTest extends FunSpec with Matchers {
+class SetUtilsTest extends AnyFunSpec with Matchers {
 
  describe(s"pSet") {
   def shouldCalculatePSet[A](s: Set[A], expected: LazyList[(Set[A],Set[A])]): Unit = {

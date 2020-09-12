@@ -1,4 +1,4 @@
-lazy val scala212 = "2.12.10"
+lazy val scala212 = "2.12.11"
 lazy val scala213 = "2.13.1"
 lazy val supportedScalaVersions = List(scala212, scala213)
 
@@ -6,17 +6,19 @@ lazy val supportedScalaVersions = List(scala212, scala213)
 lazy val antlrVersion            = "4.7.1"
 lazy val catsVersion             = "2.0.0"
 lazy val commonsTextVersion      = "1.8"
-lazy val circeVersion            = "0.12.0-RC3"
+lazy val circeVersion            = "0.13.0"
 lazy val diffsonVersion          = "4.0.0"
+lazy val fs2Version              = "2.3.0"
 // lazy val effVersion            = "4.6.1"
 lazy val jenaVersion             = "3.13.1"
 lazy val jgraphtVersion          = "1.3.1"
 lazy val logbackVersion          = "1.2.3"
 lazy val loggingVersion          = "3.9.2"
+lazy val pprintVersion           = "0.5.6"
 lazy val rdf4jVersion            = "3.0.0"
 lazy val scalacheckVersion       = "1.14.0"
-lazy val scalacticVersion        = "3.0.8"
-lazy val scalaTestVersion        = "3.0.8"
+lazy val scalacticVersion        = "3.1.1"
+lazy val scalaTestVersion        = "3.1.1"
 lazy val scalaGraphVersion       = "1.11.5"
 lazy val scalatagsVersion        = "0.6.7"
 lazy val scallopVersion          = "3.3.1"
@@ -42,11 +44,13 @@ lazy val circeGeneric      = "io.circe"                   %% "circe-generic"    
 lazy val circeParser       = "io.circe"                   %% "circe-parser"        % circeVersion
 lazy val commonsText       = "org.apache.commons"         %  "commons-text"        % commonsTextVersion
 lazy val diffsonCirce      = "org.gnieh"                  %% "diffson-circe"       % diffsonVersion
+lazy val fs2               = "co.fs2"                     %% "fs2-core"            % fs2Version
 // lazy val eff               = "org.atnos"                  %% "eff"                 % effVersion
 lazy val jgraphtCore       = "org.jgrapht"                % "jgrapht-core"         % jgraphtVersion
 lazy val logbackClassic    = "ch.qos.logback"             % "logback-classic"      % logbackVersion
 lazy val jenaArq           = "org.apache.jena"            % "jena-arq"             % jenaVersion
 lazy val jenaFuseki        = "org.apache.jena"            % "jena-fuseki-main"     % jenaVersion
+lazy val pprint            = "com.lihaoyi"                %% "pprint"              % pprintVersion             
 lazy val rdf4j_runtime     = "org.eclipse.rdf4j"          % "rdf4j-runtime"        % rdf4jVersion
 
 lazy val scalaLogging      = "com.typesafe.scala-logging" %% "scala-logging"       % loggingVersion
@@ -159,6 +163,8 @@ lazy val utils = project
       catsKernel,
       catsMacros,
       catsEffect,
+      fs2,
+      pprint,
       collectionCompat,
       diffsonCirce,
       xercesImpl,

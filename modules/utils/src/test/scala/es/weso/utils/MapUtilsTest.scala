@@ -1,9 +1,10 @@
 package es.weso.utils
 
 import es.weso.utils.MapUtils._
-import org.scalatest._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 
-class MapUtilsTest extends FunSpec with Matchers {
+class MapUtilsTest extends AnyFunSpec with Matchers {
 
   describe("MapUtils mapMap") {
     it(s"Should convert map of map") {

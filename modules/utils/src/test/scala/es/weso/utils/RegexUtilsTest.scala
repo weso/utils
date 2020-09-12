@@ -1,8 +1,9 @@
 package es.weso.utils
 
-import org.scalatest._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 
-class RegexUtilsTest extends FunSpec with Matchers {
+class RegexUtilsTest extends AnyFunSpec with Matchers {
   describe("Regex") {
     shouldMatch("\\d{2}", None, "34")
     // shouldMatch("""^\\/\t\\n\\r$""", None, "/\t\n\r")

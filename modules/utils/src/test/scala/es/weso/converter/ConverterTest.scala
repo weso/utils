@@ -1,9 +1,11 @@
 package es.weso.converter
 
-import org.scalatest._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
+
 import scala.util.Try
 
-class ConverterTest extends FunSpec with Matchers with Converter {
+class ConverterTest extends AnyFunSpec with Matchers with Converter {
 
   describe(s"Converter") {
     it(s"Should convert strings to ints") {

@@ -1,8 +1,9 @@
 package es.weso.utils.internal
-import org.scalatest._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 import CollectionCompat._
 
-class CollectionCompatTest extends FunSpec with Matchers {
+class CollectionCompatTest extends AnyFunSpec with Matchers {
   
     describe("CollectionCompat") {
         it("Should create a collection") {

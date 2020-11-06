@@ -1,10 +1,14 @@
 package es.weso.utils
 import java.io._
 import java.nio.file.Paths
-import cats.data.EitherT
+// import cats.data.EitherT
 import cats.effect._
 import scala.io._
 import java.nio.file.Path
+import fs2._
+import java.nio.file.NoSuchFileException
+import scala.util.control.NoStackTrace
+
 // import util._
 
 object FileUtils {
@@ -71,7 +75,7 @@ object FileUtils {
    * @param file file
    *
    */
-  def getContents(file: File): EitherT[IO, String, CharSequence] = {
+  /*def getContents(file: File): EitherT[IO, String, CharSequence] = {
     try {
       using(Source.fromFile(file)("UTF-8")) { source =>
         EitherT.pure[IO,String](source.getLines.mkString("\n"))
@@ -84,7 +88,7 @@ object FileUtils {
       case e: Exception =>
         EitherT.leftT[IO,CharSequence](s"Exception reading file ${file.getAbsolutePath}: ${e.getMessage}")
     }
-  }
+  }*/
 
   /**
    * Gets the contents of a file
@@ -92,12 +96,17 @@ object FileUtils {
    * @param fileName name of the file
    *
    */
-  def getContents(path: Path): IO[CharSequence] = {
-    val decoder: Pipe[IO,Byte,String] = fs2.text.utf8Decode
+  def getContents(path: Path): IO[String] = {
+    import scala.concurrent.ExecutionContext
+    implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
+    val decoder: Pipe[IO,Byte,String] = text.utf8Decode
     Stream.resource(Blocker[IO]).flatMap(blocker =>
-      fs2.io.file.readAll[IO](path, blocker,4096).through(decoder)
-    ).compile.string
+      io.file.readAll[IO](path, blocker,4096).through(decoder)
+    ).compile.string.handleErrorWith(e => IO.raiseError(GetContentsException(path)))
   }
+
+  case class GetContentsException(path: Path) extends 
+    NoSuchFileException(s"""|Error obtaining contents from file ${path.toFile().getAbsolutePath()}""".stripMargin) with NoStackTrace
 
   /*
   def getContents(fileName: String): EitherT[IO, String, CharSequence] = {

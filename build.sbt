@@ -36,7 +36,6 @@ lazy val scalaMacrosVersion   = "2.1.1"
 lazy val antlr4            = "org.antlr"                  % "antlr4"               % antlrVersion
 lazy val catsCore          = "org.typelevel"              %% "cats-core"           % catsVersion
 lazy val catsKernel        = "org.typelevel"              %% "cats-kernel"         % catsVersion
-lazy val catsMacros        = "org.typelevel"              %% "cats-macros"         % catsVersion
 lazy val catsEffect        = "org.typelevel"              %% "cats-effect"         % catsVersion
 lazy val circeCore         = "io.circe"                   %% "circe-core"          % circeVersion
 lazy val circeGeneric      = "io.circe"                   %% "circe-generic"       % circeVersion
@@ -44,6 +43,7 @@ lazy val circeParser       = "io.circe"                   %% "circe-parser"     
 lazy val commonsText       = "org.apache.commons"         %  "commons-text"        % commonsTextVersion
 lazy val diffsonCirce      = "org.gnieh"                  %% "diffson-circe"       % diffsonVersion
 lazy val fs2               = "co.fs2"                     %% "fs2-core"            % fs2Version
+lazy val fs2io             = "co.fs2"                     %% "fs2-io"              % fs2Version
 // lazy val eff               = "org.atnos"                  %% "eff"                 % effVersion
 lazy val jgraphtCore       = "org.jgrapht"                % "jgrapht-core"         % jgraphtVersion
 lazy val logbackClassic    = "ch.qos.logback"             % "logback-classic"      % logbackVersion
@@ -109,7 +109,6 @@ lazy val typing = project
     libraryDependencies ++= Seq(
     catsCore,
     catsKernel,
-    catsMacros
     )
   )
 
@@ -125,7 +124,6 @@ lazy val utilsTest = project
       circeParser,
       catsCore,
       catsKernel,
-      catsMacros,
       diffsonCirce,
       xercesImpl,
       commonsText,
@@ -144,7 +142,6 @@ lazy val utilsTest = project
     libraryDependencies ++= Seq(
     catsCore,
     catsKernel,
-    catsMacros
     )
   )
 
@@ -160,9 +157,8 @@ lazy val utils = project
       circeParser,
       catsCore,
       catsKernel,
-      catsMacros,
       catsEffect,
-      fs2,
+      fs2,fs2io,
       pprint,
       collectionCompat,
       diffsonCirce,

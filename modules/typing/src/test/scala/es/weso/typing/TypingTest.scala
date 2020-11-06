@@ -1,11 +1,9 @@
 package es.weso.typing
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should._
 
-/**
- * Created by Labra on 21/11/2016.
- */
-class TypingTest extends FunSpec with Matchers {
+class TypingTest extends AnyFunSpec with Matchers {
 
   case class K(s: String)
   case class V(s: String)

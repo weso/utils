@@ -4,8 +4,11 @@ import es.weso.utils.internal.CollectionCompat._
 import cats.implicits._
 import org.scalatest._
 import cats.effect.IO
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should._
 
-class CheckerCatsTest extends FunSpec with Matchers with OptionValues {
+
+class CheckerCatsTest extends AnyFunSpec with Matchers with OptionValues {
 
   import CheckerCatsStr._
 

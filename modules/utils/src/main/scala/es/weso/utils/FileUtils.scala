@@ -2,9 +2,10 @@ package es.weso.utils
 import java.io._
 import java.nio.file.Paths
 import cats.data.EitherT
-import cats.effect.IO
+import cats.effect._
 import scala.io._
-import util._
+import java.nio.file.Path
+// import util._
 
 object FileUtils {
 
@@ -28,14 +29,15 @@ object FileUtils {
   def getFileFromFolderWithSameExt(
                                  file: File,
                                  oldExt: String,
-                                 newExt: String): EitherT[IO,String,File] = EitherT(IO {
-    val newName = file.getAbsolutePath.reverse.replaceFirst(oldExt.reverse, newExt.reverse).reverse
-    Try {
+                                 newExt: String): IO[File] = IO {
+   val newName = file.getAbsolutePath.reverse.replaceFirst(oldExt.reverse, newExt.reverse).reverse
+   new File(newName)
+/*   Try {
       new File(newName)
     }.fold(exc =>
       Left(s"Error accessing file with name $newName: ${exc.getMessage}"),
-      Right(_))
-  })
+      Right(_)) */
+  }
 
 
   def getFileFromFolderWithExt(
@@ -90,6 +92,14 @@ object FileUtils {
    * @param fileName name of the file
    *
    */
+  def getContents(path: Path): IO[CharSequence] = {
+    val decoder: Pipe[IO,Byte,String] = fs2.text.utf8Decode
+    Stream.resource(Blocker[IO]).flatMap(blocker =>
+      fs2.io.file.readAll[IO](path, blocker,4096).through(decoder)
+    ).compile.string
+  }
+
+  /*
   def getContents(fileName: String): EitherT[IO, String, CharSequence] = {
     try {
       using(Source.fromFile(fileName)("UTF-8")) { source =>
@@ -103,7 +113,7 @@ object FileUtils {
       case e: Exception =>
        EitherT.leftT[IO,CharSequence](s"Exception reading file ${fileName}: ${e.getMessage}")
     }
-  }
+  } */
 
   def getStream(fileName: String): Either[String, InputStreamReader] = {
     try {

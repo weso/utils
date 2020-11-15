@@ -91,7 +91,43 @@ class TypingTest extends AnyFunSpec with Matchers {
       t2.getOkValues(K("x")) should contain theSameElementsAs List()
       t2.getFailedValues(K("x")) should contain theSameElementsAs List((V("a")))
     }
+  }
 
+  describe(s"Remove value") {
+    it(s"Should remove values") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty.addType(K("x"), V("a"), List(Ev("e1")))
+      val t2 = t1.removeValue(K("x"),V("a"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List()
+    }
 
+    it(s"Should remove values 2") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty
+        .addType(K("x"), V("a"), List(Ev("e1")))
+        .addType(K("x"), V("b"), List(Ev("e2")))
+      val t2 = t1.removeValue(K("x"),V("a"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("b"))
+    }
+
+    it(s"Should remove no values if it doesn't exist") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty
+        .addType(K("x"), V("a"), List(Ev("e1")))
+        .addType(K("x"), V("b"), List(Ev("e2")))
+      val t2 = t1.removeValue(K("y"),V("a"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("a"),V("b"))
+      t2.getOkValues(K("y")) should contain theSameElementsAs List()
+    }
+
+    it(s"Should remove no values if it doesn't have that value") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty
+        .addType(K("x"), V("a"), List(Ev("e1")))
+        .addType(K("y"), V("b"), List(Ev("e2")))
+      val t2 = t1.removeValue(K("x"),V("b"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("a"))
+      t2.getOkValues(K("y")) should contain theSameElementsAs List(V("b"))
+    }
   }
 }

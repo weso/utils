@@ -104,4 +104,25 @@ case class TypingMap[Key, Value, Err, Evidence](
     }
   }
 
+  override def removeValue(key: Key, value: Value): Typing[Key, Value, Err, Evidence] = {
+    def mappingFn(maybeValue: Option[Map[Value,TypingResult[Err,Evidence]]]): Option[Map[Value,TypingResult[Err,Evidence]]] = maybeValue match {
+      case None => None
+      case Some(mapVs) => {
+        def f(m: Option[TypingResult[Err,Evidence]]): Option[TypingResult[Err,Evidence]] = m match {
+          case None => None
+          case Some(tr) => if (tr.isOK) None 
+                           else Some(tr)
+        }
+        Some(mapVs.updatedWith(value)(f))
+      }
+    } 
+    TypingMap(m.updatedWith(key)(mappingFn))
+  }
+
+ private def rmValues[K,V](cond: V => Boolean)(m: Map[K,V]): Map[K,V] = ???
+
+ override def removeValuesWith(cond: Value => Boolean): Typing[Key,Value,Err,Evidence] = {
+   TypingMap(m.view.mapValues(rmValues(cond)).toMap)
+ }
+
 }

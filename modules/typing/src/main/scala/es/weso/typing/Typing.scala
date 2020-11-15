@@ -30,6 +30,10 @@ abstract class Typing[Key, Value, Err, Evidence] {
 
   def addNotEvidence(key: Key, value: Value, e: Err): Typing[Key, Value, Err, Evidence]
 
+  def removeValue(key: Key, value: Value): Typing[Key, Value, Err, Evidence] 
+
+  def removeValuesWith(cond: Value => Boolean): Typing[Key,Value,Err,Evidence]
+
   def addType(key: Key, value: Value,
     evidences: List[Evidence] = List()): Typing[Key, Value, Err, Evidence] =
     addEvidences(key, value, evidences)

@@ -1,6 +1,6 @@
 package es.weso.typing
 import cats._, data._
-import cats.implicits._
+import cats.syntax.all._
 
 case class TypingResult[Err, Evidence](
   t: ValidatedNel[Err, List[Evidence]]) {

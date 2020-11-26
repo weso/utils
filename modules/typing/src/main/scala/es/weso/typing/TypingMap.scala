@@ -1,6 +1,6 @@
 package es.weso.typing
 import cats._, data._
-import cats.implicits._
+import cats.syntax.all._
 import TypingResult._
 
 case class TypingMap[Key, Value, Err, Evidence](

@@ -2,7 +2,7 @@ package es.weso.typing
 
 import org.scalatest._
 import cats._
-import cats.implicits._
+import cats.syntax.all._
 import TypingResult._
 
 class TypingResultTest extends FunSpec with Matchers {

@@ -19,7 +19,7 @@ class IOUtilsTest extends AnyFunSpec with Matchers {
             v2 <- ok_es(5)
         } yield v1 + v2
 
-        run_es(r).unsafeRunSync should be(Right(8))
+        run_es(r).unsafeRunSync() should be(Right(8))
       }
 
       it(s"SHould fail when one fails") {
@@ -29,7 +29,7 @@ class IOUtilsTest extends AnyFunSpec with Matchers {
             v3 <- ok_es(4)
         } yield v1 + v2 + v3
 
-        run_es(r).unsafeRunSync should be(Left("No number"))
+        run_es(r).unsafeRunSync() should be(Left("No number"))
       }
 
       it(s"SHould fail when one fails in IO") {
@@ -38,7 +38,7 @@ class IOUtilsTest extends AnyFunSpec with Matchers {
             v2 <- err[Int]("No number")
             v3 <- ok(4)
         } yield v1 + v2 + v3
-        an [IOException] should be thrownBy (r.unsafeRunSync)
+        an [IOException] should be thrownBy (r.unsafeRunSync())
       }
 
       it(s"Should convert io IO(3) to Right(3)") {
@@ -57,7 +57,7 @@ class IOUtilsTest extends AnyFunSpec with Matchers {
       it(s"SHould convert lazy list to stream") {
         val ls: LazyList[Int] = LazyList(1,2,3)
         val r = streamFromLazyList(ls)
-        r.compile.toList.unsafeRunSync should contain theSameElementsAs(List(1,2,3))
+        r.compile.toList.unsafeRunSync() should contain theSameElementsAs(List(1,2,3))
       }
     }
 
@@ -69,7 +69,7 @@ class IOUtilsTest extends AnyFunSpec with Matchers {
                 v2 <- ok_es(2)
                 v3 <- ok_es(3)
          } yield v1 + v2 + v3
-         run_es(r).unsafeRunSync should be(Right(6))
+         run_es(r).unsafeRunSync() should be(Right(6))
         }
 
         it(s"Happy path adding from either and from IO") {
@@ -78,7 +78,7 @@ class IOUtilsTest extends AnyFunSpec with Matchers {
                 v2 <- either2es(Right(2))
                 v3 <- io2es(IO(3))
          } yield v1 + v2 + v3
-         run_es(r).unsafeRunSync should be(Right(6))
+         run_es(r).unsafeRunSync() should be(Right(6))
         }
 
         it(s"Happy path adding from either, from IO and fromStream") {
@@ -88,7 +88,7 @@ class IOUtilsTest extends AnyFunSpec with Matchers {
                 v3 <- io2es(IO(3))
                 v4 <- stream2es(Stream(1,2,3).covary[IO])
          } yield v1 + v2 + v3 + v4.fold(0)(_ + _)
-         run_es(r).unsafeRunSync should be(Right(12))
+         run_es(r).unsafeRunSync() should be(Right(12))
         }
 
     }

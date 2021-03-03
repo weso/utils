@@ -1,13 +1,18 @@
-lazy val scala212 = "2.12.12"
-lazy val scala213 = "2.13.2"
-lazy val supportedScalaVersions = List(scala212, scala213)
+lazy val scala212 = "2.12.13"
+lazy val scala213 = "2.13.5"
+lazy val scala3   = "3.0.0-M2"
+lazy val supportedScalaVersions = List(
+  scala212, 
+  scala213, 
+//  scala3
+ )
 
 // Dependency versions
 lazy val antlrVersion            = "4.7.1"
-lazy val catsVersion             = "2.2.0"
-lazy val catsEffectVersion       = "2.2.0"
+lazy val catsVersion             = "2.3.0"
+lazy val catsEffectVersion       = "2.3.1"
 lazy val commonsTextVersion      = "1.8"
-lazy val circeVersion            = "0.14.0-M1"
+lazy val circeVersion            = "0.14.0-M2"
 lazy val diffsonVersion          = "4.0.0"
 lazy val fs2Version              = "2.4.4"
 // lazy val jenaVersion             = "3.13.1"
@@ -17,8 +22,8 @@ lazy val loggingVersion          = "3.9.2"
 lazy val pprintVersion           = "0.5.6"
 // lazy val rdf4jVersion            = "3.0.0"
 lazy val scalacheckVersion       = "1.14.0"
-lazy val scalacticVersion        = "3.1.1"
-lazy val scalaTestVersion        = "3.1.1"
+lazy val scalacticVersion        = "3.2.0"
+lazy val scalaTestVersion        = "3.2.2"
 lazy val scalaGraphVersion       = "1.11.5"
 lazy val scalatagsVersion        = "0.6.7"
 lazy val scallopVersion          = "3.3.1"
@@ -75,14 +80,8 @@ def priorTo2_13(scalaVersion: String): Boolean =
 lazy val utilsRoot = project
   .in(file("."))
   .enablePlugins(ScalaUnidocPlugin, SbtNativePackager, WindowsPlugin, JavaAppPackaging, LauncherJarPlugin)
-  .disablePlugins(RevolverPlugin)
-//  .settings(
-//    buildInfoKeys := BuildInfoKey.ofN(name, version, scalaVersion, sbtVersion),
-//    buildInfoPackage := "es.weso.shaclex.buildinfo" 
-//  )
   .settings(commonSettings, packagingSettings, publishSettings, ghPagesSettings, wixSettings)
   .aggregate(typing, validating, utilsTest, utils)
-//  .dependsOn(sutils, typing, validating, utilsTest, utils)
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(noDocProjects: _*),
     libraryDependencies ++= Seq(
@@ -102,19 +101,19 @@ lazy val utilsRoot = project
 
 lazy val typing = project
   .in(file("modules/typing"))
-  .disablePlugins(RevolverPlugin)
+  .dependsOn(utils)
   .settings(commonSettings, publishSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
     catsCore,
     catsKernel,
+    pprint
     )
   )
 
 lazy val utilsTest = project
   .in(file("modules/utilsTest"))
-  .disablePlugins(RevolverPlugin)
   .settings(commonSettings, publishSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
@@ -134,7 +133,6 @@ lazy val utilsTest = project
 
   lazy val validating = project
   .in(file("modules/validating"))
-  .disablePlugins(RevolverPlugin)
   .dependsOn(utils % "test -> test; compile -> compile")
   .settings(commonSettings, publishSettings)
   .settings(
@@ -250,9 +248,12 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   resolvers ++= Seq(
     Resolver.bintrayRepo("labra", "maven"),
     Resolver.bintrayRepo("weso", "weso-releases"),
-    Resolver.sonatypeRepo("snapshots")
+    Resolver.sonatypeRepo("snapshots"),
+    Resolver.githubPackages("weso")
   ), 
-  coverageHighlighting := true
+  coverageHighlighting := true,
+  githubOwner := "weso", 
+  githubRepository := "utils"
 )
 
 lazy val publishSettings = Seq(
@@ -278,6 +279,6 @@ lazy val publishSettings = Seq(
     "-diagrams",
   ),
   publishMavenStyle              := true,
-  bintrayRepository in bintray   := "weso-releases",
-  bintrayOrganization in bintray := Some("weso")
+//  bintrayRepository in bintray   := "weso-releases",
+//  bintrayOrganization in bintray := Some("weso")
 )

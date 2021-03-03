@@ -17,7 +17,7 @@ class FileUtilsTest extends AnyFunSpec with Matchers {
             str <- getContents(Paths.get("modules/utils/src/test/resources/exampleFolder/testFile.txt"))
         } yield str.toString
 
-        r.unsafeRunSync should be("Hello World!")
+        r.unsafeRunSync() should be("Hello World!")
       }
 
       it(s"Should fail if file doesn't exist") {

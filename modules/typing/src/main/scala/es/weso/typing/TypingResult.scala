@@ -71,4 +71,8 @@ object TypingResult {
     es.map(e => Show[Evidence].show(e)).mkString("\n" + tab)
   }
 
+  def fromErr[Err,Evidence](err: Err): TypingResult[Err, Evidence] = 
+     TypingResult(Validated.invalidNel(err))
+
+
 }

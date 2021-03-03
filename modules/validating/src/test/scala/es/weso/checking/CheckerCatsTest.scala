@@ -134,7 +134,7 @@ class CheckerCatsTest extends AnyFunSpec with Matchers with OptionValues {
       it(msg) {
         counter.set(0)
         runValueFlag(checkSomeFlag(ls, check, last)).
-        unsafeRunSync.
+        unsafeRunSync().
         fold(e => fail(s"Error: $e"), v => {
           v should be(expected)
           counter.get should equal(stepsExpected)
@@ -173,7 +173,7 @@ class CheckerCatsTest extends AnyFunSpec with Matchers with OptionValues {
       it(msg) {
         counter.set(0)
         runValueFlag(checkAllFailFAtFirstFlag(ls, check, last)).
-        unsafeRunSync.
+        unsafeRunSync().
         fold(e => fail(s"Error: $e"), v => {
           v should be(expected)
           counter.get should equal(stepsExpected)
@@ -212,7 +212,7 @@ class CheckerCatsTest extends AnyFunSpec with Matchers with OptionValues {
       it(msg) {
         counter.set(0)
         runValueFlag(checkAllFlag(ls, check, last)).
-        unsafeRunSync.
+        unsafeRunSync().
         fold(e => fail(s"Error: $e"), v => {
           v should be(expected)
           counter.get should equal(stepsExpected)
@@ -245,7 +245,7 @@ class CheckerCatsTest extends AnyFunSpec with Matchers with OptionValues {
                            expected: (Int,Boolean)): Unit = {
       it(msg) {
         runValueFlag(checkSequenceFlag(ls, last)).
-        unsafeRunSync.
+        unsafeRunSync().
         fold(e => fail(s"Error: $e"), v => {
           v should be(expected)
         })

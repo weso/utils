@@ -1,59 +1,57 @@
 package es.weso.utils
 
-import org.scalatest._
-import matchers.should._
-import funspec._
+// import org.scalatest._
+// import matchers.should._
+// import funspec._
 import es.weso.utils.IOUtils._
-import cats.effect.IO
-import fs2.Stream
-import es.weso.utils.internal.CollectionCompat._
+// import cats.effect.IO
+// import fs2.Stream
+// import es.weso.utils.internal.CollectionCompat._
+import munit.CatsEffectSuite
 
-class IOUtilsTest extends AnyFunSpec with Matchers {
+class IOUtilsTest extends CatsEffectSuite {
 
-  describe("IOUtils") {
+  test(s"SHould be able to add two numbers") {
+    val r: ESIO[Int] = for {
+      v1 <- ok_es(3)
+      v2 <- ok_es(5)
+    } yield v1 + v2
 
-    describe("ESIO") {
-       it(s"SHould be able to add two numbers") {
-        val r: ESIO[Int] = for {
-            v1 <- ok_es(3)
-            v2 <- ok_es(5)
-        } yield v1 + v2
+    run_es(r).assertEquals(Right(8))
+  }
 
-        run_es(r).unsafeRunSync() should be(Right(8))
-      }
-
-      it(s"SHould fail when one fails") {
+  test(s"SHould fail when one fails") {
         val r: ESIO[Int] = for {
             v1 <- ok_es(3)
             v2 <- fail_es[Int]("No number")
             v3 <- ok_es(4)
         } yield v1 + v2 + v3
 
-        run_es(r).unsafeRunSync() should be(Left("No number"))
-      }
+        run_es(r).assertEquals(Left("No number"))
+  }
 
-      it(s"SHould fail when one fails in IO") {
-        val r: IO[Int] = for {
+/*  test(s"SHould fail when one fails in IO") {
+   val r: IO[Int] = for {
             v1 <- ok(3)
             v2 <- err[Int]("No number")
             v3 <- ok(4)
         } yield v1 + v2 + v3
-        an [IOException] should be thrownBy (r.unsafeRunSync())
-      }
+   //     an [IOException] should be thrownBy (r.unsafeRunSync())
+  } */
 
-      it(s"Should convert io IO(3) to Right(3)") {
-          val r = IO(3)
-          io2ES(r) should be(Right(3))
-      }
+/*  test(s"Should convert io IO(3) to Right(3)") {
+    val r = IO(3)
+    io2ES(r).assertEquals(Right(3))
+  } */
 
-      it(s"Should convert io IO(exc...) to Left(exc)") {
+  /*    it(s"Should convert io IO(exc...) to Left(exc)") {
           val r = IO.raiseError(new RuntimeException("Exc"))
           io2ES(r) should be(Left("Exc"))
-      }
+      } */
 
-    }
+    
 
-    describe(s"Stream IO") {
+/*    describe(s"Stream IO") {
       it(s"SHould convert lazy list to stream") {
         val ls: LazyList[Int] = LazyList(1,2,3)
         val r = streamFromLazyList(ls)
@@ -92,6 +90,6 @@ class IOUtilsTest extends AnyFunSpec with Matchers {
         }
 
     }
-  }
+  } */
 
 }

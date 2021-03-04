@@ -35,8 +35,10 @@ object IOUtils {
 
  def sequence[A](vs: List[IO[A]]): IO[List[A]] = vs.sequence
 
- def io2ES[A](v: IO[A]):Either[String,A] = 
-   MonadError[IO,Throwable].attempt(v).unsafeRunSync().leftMap(_.getMessage())
+ def io2ES[A](v: IO[A]):Either[String,A] = {
+   import cats.effect.unsafe.implicits.global
+   MonadError[IO,Throwable].attempt(v).unsafeRunSync().leftMap(_.getMessage()) 
+ }
   
  // The following code is inspired by: 
  // https://stackoverflow.com/questions/49751533/how-to-convert-a-streamio-lista-to-streamio-a
@@ -73,19 +75,19 @@ object IOUtils {
     def ok_esf[A, F[_]:Applicative](x:A): ESF[A,F] = EitherT.pure[F,String](x)
     def fail_ef[A, F[_]:Applicative](msg: String): ESF[A,F] = EitherT.fromEither[F](msg.asLeft[A])
     def f2es[A, F[_]:Applicative](fa: F[A]): ESF[A,F] = EitherT.liftF(fa)
-    def io2esf[A,F[_]:Effect: LiftIO](io:IO[A]): ESF[A,F] = EitherT.liftF(LiftIO[F].liftIO(io))
+//     def io2esf[A,F[_]:Effect: LiftIO](io:IO[A]): ESF[A,F] = EitherT.liftF(LiftIO[F].liftIO(io))
     def either2ef[A,F[_]:Applicative](e:Either[String,A]): ESF[A,F] = EitherT.fromEither[F](e)
-    def stream2ef[A,F[_]:Effect](s: Stream[F,A]): ESF[LazyList[A],F] = f2es(s.compile.to(LazyList))
+//    def stream2ef[A,F[_]:Effect](s: Stream[F,A]): ESF[LazyList[A],F] = f2es(s.compile.to(LazyList))
 
     def run_esf[A,F[_]](es: ESF[A,F]): F[Either[String,A]] = es.value
-    def run_esiof[A,F[_]:Effect](esio: ESIO[A]): F[Either[String,A]] = run_esf(esio2esf[A,F](esio))
+//    def run_esiof[A,F[_]:Effect](esio: ESIO[A]): F[Either[String,A]] = run_esf(esio2esf[A,F](esio))
 
-    def esio2esf[A, F[_]: Effect](e: ESIO[A]): ESF[A,F] = {
+/*    def esio2esf[A, F[_]: Effect](e: ESIO[A]): ESF[A,F] = {
       for {
         either <- io2esf[Either[String,A],F](e.value)
         r <- either2ef[A,F](either)  
       } yield r
-    }
+    } */
 
     def io2f[A,F[_]:LiftIO](io: IO[A]): F[A] = LiftIO[F].liftIO(io)
 

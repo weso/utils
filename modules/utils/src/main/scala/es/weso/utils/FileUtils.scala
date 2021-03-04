@@ -6,6 +6,7 @@ import cats.effect._
 import scala.io._
 import java.nio.file.Path
 import fs2._
+import fs2.io.file.Files
 import java.nio.file.NoSuchFileException
 import scala.util.control.NoStackTrace
 
@@ -97,12 +98,8 @@ object FileUtils {
    *
    */
   def getContents(path: Path): IO[String] = {
-    import scala.concurrent.ExecutionContext
-    implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
     val decoder: Pipe[IO,Byte,String] = text.utf8Decode
-    Stream.resource(Blocker[IO]).flatMap(blocker =>
-      io.file.readAll[IO](path, blocker,4096).through(decoder)
-    ).compile.string.handleErrorWith(e => IO.raiseError(GetContentsException(path)))
+    Files[IO].readAll(path, 4096).through(decoder).compile.string.handleErrorWith(e => IO.raiseError(GetContentsException(path)))
   }
 
   case class GetContentsException(path: Path) extends 
@@ -146,11 +143,14 @@ object FileUtils {
    * @param name name of the file
    * @param contents contents to write to the file
    */
-  def writeFile(name: String, contents: String): Unit = {
-    import java.nio.file._
+  def writeFile(name: String, contents: String): IO[Unit] = {
     val path = Paths.get(name)
-    Files.write(path, contents.getBytes)
-    ()
+    Stream.emits(contents)
+     .covary[IO]
+     .chunkN(4096)
+     .map(_.toVector.mkString)
+     .through(text.utf8Encode)
+     .through(Files[IO].writeAll(path)).compile.drain
   }
 
   /**

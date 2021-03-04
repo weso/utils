@@ -1,6 +1,6 @@
 lazy val scala212 = "2.12.13"
 lazy val scala213 = "2.13.5"
-lazy val scala3   = "3.0.0-M2"
+lazy val scala3   = "3.0.0-RC1"
 lazy val supportedScalaVersions = List(
   scala212, 
   scala213, 
@@ -9,27 +9,29 @@ lazy val supportedScalaVersions = List(
 
 // Dependency versions
 lazy val antlrVersion            = "4.7.1"
-lazy val catsVersion             = "2.3.0"
-lazy val catsEffectVersion       = "2.3.1"
+lazy val catsVersion             = "2.4.2"
+lazy val catsEffectVersion       = "3.0.0-RC2"
 lazy val commonsTextVersion      = "1.8"
-lazy val circeVersion            = "0.14.0-M2"
+lazy val circeVersion            = "0.14.0-M4"
 lazy val diffsonVersion          = "4.0.0"
-lazy val fs2Version              = "2.4.4"
+lazy val fs2Version              = "3.0.0-M7"
 // lazy val jenaVersion             = "3.13.1"
+lazy val munitVersion            = "0.7.22"
+lazy val munitEffectVersion      = "0.13.1"
 lazy val jgraphtVersion          = "1.3.1"
 lazy val logbackVersion          = "1.2.3"
 lazy val loggingVersion          = "3.9.2"
 lazy val pprintVersion           = "0.5.6"
 // lazy val rdf4jVersion            = "3.0.0"
 lazy val scalacheckVersion       = "1.14.0"
-lazy val scalacticVersion        = "3.2.0"
-lazy val scalaTestVersion        = "3.2.2"
+lazy val scalacticVersion        = "3.2.5"
+lazy val scalaTestVersion        = "3.2.5"
 lazy val scalaGraphVersion       = "1.11.5"
 lazy val scalatagsVersion        = "0.6.7"
 lazy val scallopVersion          = "3.3.1"
 lazy val sextVersion             = "0.2.6"
 lazy val typesafeConfigVersion   = "1.3.4"
-lazy val xercesVersion           = "2.12.0"
+// lazy val xercesVersion           = "2.12.0"
 lazy val collectionCompatVersion = "2.1.2"
 
 // Compiler plugin dependency versions
@@ -41,7 +43,7 @@ lazy val scalaMacrosVersion   = "2.1.1"
 lazy val antlr4            = "org.antlr"                  % "antlr4"               % antlrVersion
 lazy val catsCore          = "org.typelevel"              %% "cats-core"           % catsVersion
 lazy val catsKernel        = "org.typelevel"              %% "cats-kernel"         % catsVersion
-lazy val catsEffect        = "org.typelevel"              %% "cats-effect"         % catsVersion
+lazy val catsEffect        = "org.typelevel"              %% "cats-effect"         % catsEffectVersion
 lazy val circeCore         = "io.circe"                   %% "circe-core"          % circeVersion
 lazy val circeGeneric      = "io.circe"                   %% "circe-generic"       % circeVersion
 lazy val circeParser       = "io.circe"                   %% "circe-parser"        % circeVersion
@@ -54,6 +56,8 @@ lazy val jgraphtCore       = "org.jgrapht"                % "jgrapht-core"      
 lazy val logbackClassic    = "ch.qos.logback"             % "logback-classic"      % logbackVersion
 // lazy val jenaArq           = "org.apache.jena"            % "jena-arq"             % jenaVersion
 // lazy val jenaFuseki        = "org.apache.jena"            % "jena-fuseki-main"     % jenaVersion
+lazy val munit             = "org.scalameta"              %% "munit"               % munitVersion 
+lazy val munitEffects      = "org.typelevel"              %% "munit-cats-effect-3" % munitEffectVersion
 lazy val pprint            = "com.lihaoyi"                %% "pprint"              % pprintVersion             
 // lazy val rdf4j_runtime     = "org.eclipse.rdf4j"          % "rdf4j-runtime"        % rdf4jVersion
 
@@ -67,7 +71,7 @@ lazy val scalatags         = "com.lihaoyi"                %% "scalatags"        
 // lazy val htmlUnit          = "org.seleniumhq.selenium"    % "htmlunit-driver"      % seleniumVersion
 // lazy val sext              = "com.github.nikita-volkov"   % "sext"                 % sextVersion
 lazy val typesafeConfig    = "com.typesafe"               % "config"               % typesafeConfigVersion
-lazy val xercesImpl        = "xerces"                     % "xercesImpl"           % xercesVersion
+// lazy val xercesImpl        = "xerces"                     % "xercesImpl"           % xercesVersion
 lazy val simulacrum        = "org.typelevel"              %% "simulacrum"          % simulacrumVersion
 lazy val collectionCompat  = "org.scala-lang.modules"     %% "scala-collection-compat" % collectionCompatVersion 
 
@@ -124,7 +128,7 @@ lazy val utilsTest = project
       catsCore,
       catsKernel,
       diffsonCirce,
-      xercesImpl,
+//      xercesImpl,
       commonsText,
       scalaTest
     )
@@ -160,9 +164,12 @@ lazy val utils = project
       pprint,
       collectionCompat,
       diffsonCirce,
-      xercesImpl,
+      munit % Test,
+      munitEffects % Test,
+//      xercesImpl,
       commonsText
-    )
+    ),
+    testFrameworks += new TestFramework("munit.Framework")
   )
 
 /* ********************************************************
@@ -240,15 +247,12 @@ lazy val wixSettings = Seq(
 )
 
 lazy val ghPagesSettings = Seq(
-  git.remoteRepo := "git@github.com:labra/shaclex.git"
+//  git.remoteRepo := "git@github.com:labra/shaclex.git"
 )
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   organization := "es.weso",
   resolvers ++= Seq(
-    Resolver.bintrayRepo("labra", "maven"),
-    Resolver.bintrayRepo("weso", "weso-releases"),
-    Resolver.sonatypeRepo("snapshots"),
     Resolver.githubPackages("weso")
   ), 
   coverageHighlighting := true,
@@ -257,7 +261,7 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
 )
 
 lazy val publishSettings = Seq(
-  maintainer      := "Jose Emilio Labra Gayo <labra@uniovi.es>",
+//  maintainer      := "Jose Emilio Labra Gayo <labra@uniovi.es>",
   homepage        := Some(url("https://github.com/weso/utils")),
   licenses        := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
   scmInfo         := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
@@ -270,14 +274,14 @@ lazy val publishSettings = Seq(
                          <url>https://weso.labra.es</url>
                        </developer>
                      </developers>,
-  scalacOptions in doc ++= Seq(
+ /* scalacOptions in doc ++= Seq(
     "-diagrams-debug",
     "-doc-source-url",
     scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
     "-sourcepath",
     baseDirectory.in(LocalRootProject).value.getAbsolutePath,
     "-diagrams",
-  ),
+  ), */
   publishMavenStyle              := true,
 //  bintrayRepository in bintray   := "weso-releases",
 //  bintrayOrganization in bintray := Some("weso")

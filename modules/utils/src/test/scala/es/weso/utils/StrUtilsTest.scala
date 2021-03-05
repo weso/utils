@@ -7,7 +7,13 @@ import StrUtils._
 class StrUtilsTest extends AnyFunSpec with Matchers {
 
   describe("StrUtils unescape") {
+    shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\", "\\")
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\tpepe", "\tpepe")
+    shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\bpepe", "\bpepe")
+    shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\npepe", "\npepe")
+    shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\rpepe", "\rpepe")
+    shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\fpepe", "\fpepe")
+    shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\'pepe", "\'pepe")
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral,"pepe\\u0031", "pepe1")
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral,"\\u0031pepe\\u0031", "1pepe1")
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral,"\\u0032\\u00ac\\u0031", "2¬1")
@@ -27,6 +33,16 @@ class StrUtilsTest extends AnyFunSpec with Matchers {
   describe("StrUtils unescapePattern") {
     shouldConvert("unescapePattern", unescapePattern, "\\u0061", "a")
     shouldConvert("unescapePattern", unescapePattern, "\\\\u0061", "\\\\u0061")
+  }
+
+  describe("StrUtils unescapeIRI") {
+    shouldConvert("unescapeIRI", unescapeIRI, "\\thttp://www.w3.org/1999/02/22-rdf-syntax-ns",
+      "\thttp://www.w3.org/1999/02/22-rdf-syntax-ns")
+  }
+
+  describe("StrUtils unescapeCode") {
+    shouldConvert("unescapeCode", unescapeCode, "\\\"Hello\\r\\n\\tW\"orld\\n",
+      "\"Hello\r\n\tW\"orld\n")
   }
 
   describe("StrUtils escapePattern") {

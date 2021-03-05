@@ -1,4 +1,5 @@
 package es.weso.checking
+import cats.effect.IO
 
 trait Checker {
   type Config
@@ -27,15 +28,15 @@ trait Checker {
 
   def attempt[A](c: Check[A]): Check[Either[Err, A]]
 
-  def run[A](c: Check[A])(config: Config)(env: Env): (Log, Either[Err, A])
+  def run[A](c: Check[A])(config: Config)(env: Env): IO[(Log, Either[Err, A])]
 
-  def runCheck[A](c: Check[A])(config: Config)(env: Env): (Either[Err, A], Log) =
-    run(c)(config)(env).swap
+  def runCheck[A](c: Check[A])(config: Config)(env: Env): IO[(Either[Err, A], Log)] =
+    run(c)(config)(env).map(_.swap)
 
-  def runValue[A](c: Check[A])(config: Config)(env: Env): Either[Err, A] =
-    run(c)(config)(env)._2
+  def runValue[A](c: Check[A])(config: Config)(env: Env): IO[Either[Err, A]] =
+    run(c)(config)(env).map(_._2)
 
-  def runLog[A](c: Check[A])(config: Config)(env: Env): Log =
-    run(c)(config)(env)._1
+  def runLog[A](c: Check[A])(config: Config)(env: Env): IO[Log] =
+    run(c)(config)(env).map(_._1)
 
 }

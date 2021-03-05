@@ -1,10 +1,16 @@
 package es.weso.utils
 import java.io._
 import java.nio.file.Paths
-import cats.data.EitherT
-import cats.effect.IO
+// import cats.data.EitherT
+import cats.effect._
 import scala.io._
-import util._
+import java.nio.file.Path
+import fs2._
+import fs2.io.file.Files
+import java.nio.file.NoSuchFileException
+import scala.util.control.NoStackTrace
+
+// import util._
 
 object FileUtils {
 
@@ -28,14 +34,15 @@ object FileUtils {
   def getFileFromFolderWithSameExt(
                                  file: File,
                                  oldExt: String,
-                                 newExt: String): EitherT[IO,String,File] = EitherT(IO {
-    val newName = file.getAbsolutePath.reverse.replaceFirst(oldExt.reverse, newExt.reverse).reverse
-    Try {
+                                 newExt: String): IO[File] = IO {
+   val newName = file.getAbsolutePath.reverse.replaceFirst(oldExt.reverse, newExt.reverse).reverse
+   new File(newName)
+/*   Try {
       new File(newName)
     }.fold(exc =>
       Left(s"Error accessing file with name $newName: ${exc.getMessage}"),
-      Right(_))
-  })
+      Right(_)) */
+  }
 
 
   def getFileFromFolderWithExt(
@@ -69,7 +76,7 @@ object FileUtils {
    * @param file file
    *
    */
-  def getContents(file: File): EitherT[IO, String, CharSequence] = {
+  /*def getContents(file: File): EitherT[IO, String, CharSequence] = {
     try {
       using(Source.fromFile(file)("UTF-8")) { source =>
         EitherT.pure[IO,String](source.getLines.mkString("\n"))
@@ -82,7 +89,7 @@ object FileUtils {
       case e: Exception =>
         EitherT.leftT[IO,CharSequence](s"Exception reading file ${file.getAbsolutePath}: ${e.getMessage}")
     }
-  }
+  }*/
 
   /**
    * Gets the contents of a file
@@ -90,6 +97,15 @@ object FileUtils {
    * @param fileName name of the file
    *
    */
+  def getContents(path: Path): IO[String] = {
+    val decoder: Pipe[IO,Byte,String] = text.utf8Decode
+    Files[IO].readAll(path, 4096).through(decoder).compile.string.handleErrorWith(e => IO.raiseError(GetContentsException(path)))
+  }
+
+  case class GetContentsException(path: Path) extends 
+    NoSuchFileException(s"""|Error obtaining contents from file ${path.toFile().getAbsolutePath()}""".stripMargin) with NoStackTrace
+
+  /*
   def getContents(fileName: String): EitherT[IO, String, CharSequence] = {
     try {
       using(Source.fromFile(fileName)("UTF-8")) { source =>
@@ -103,7 +119,7 @@ object FileUtils {
       case e: Exception =>
        EitherT.leftT[IO,CharSequence](s"Exception reading file ${fileName}: ${e.getMessage}")
     }
-  }
+  } */
 
   def getStream(fileName: String): Either[String, InputStreamReader] = {
     try {
@@ -127,11 +143,14 @@ object FileUtils {
    * @param name name of the file
    * @param contents contents to write to the file
    */
-  def writeFile(name: String, contents: String): Unit = {
-    import java.nio.file._
+  def writeFile(name: String, contents: String): IO[Unit] = {
     val path = Paths.get(name)
-    Files.write(path, contents.getBytes)
-    ()
+    Stream.emits(contents)
+     .covary[IO]
+     .chunkN(4096)
+     .map(_.toVector.mkString)
+     .through(text.utf8Encode)
+     .through(Files[IO].writeAll(path)).compile.drain
   }
 
   /**

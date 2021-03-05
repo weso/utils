@@ -56,9 +56,9 @@ object SeqUtils {
    * @tparam A
    * @return
    */
-  def intersperse[A](a: A, xs: Seq[A]): Seq[A] = {
+  def intersperse[A](a: A, xs: List[A]): List[A] = {
     @tailrec
-    def intersperse0(accum: Seq[A], rest: Seq[A]): Seq[A] = rest match {
+    def intersperse0(accum: List[A], rest: List[A]): List[A] = rest match {
       case Nil => accum
       case x :: Nil => x +: accum
       case h :: t => intersperse0(a +: h +: accum, t)

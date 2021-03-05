@@ -2,18 +2,19 @@ package es.weso.checking
 import cats._
 import data._
 import cats.implicits._
+import cats.effect.IO
 import es.weso.utils.internal.CollectionCompat._
 
 abstract class CheckerCats extends Checker {
   implicit val logMonoid: Monoid[Log]
 
-  type ReaderConfig[A] = Kleisli[Id, Config, A]
+  type ReaderConfig[A] = Kleisli[IO, Config, A]
   type ReaderEC[A] = Kleisli[ReaderConfig, Env, A]
   type WriterEC[A] = WriterT[ReaderEC, Log, A]
   type Check[A] = EitherT[WriterEC, Err, A]
 
   def getConfig: Check[Config] = {
-    readerConfig2check(Kleisli.ask[Id, Config])
+    readerConfig2check(Kleisli.ask[IO, Config])
   }
 
   def getEnv: Check[Env] = {
@@ -35,6 +36,17 @@ abstract class CheckerCats extends Checker {
     EitherT.left[A](mkErr[WriterEC](e))
 
   def fromEither[A](e: Either[Err,A]): Check[A] = EitherT.fromEither[WriterEC](e)
+
+  def fromIO[A](io: IO[A]): Check[A] = EitherT.liftF(WriterT.liftF(Kleisli.liftF(Kleisli.liftF(io))))
+
+  def fromEitherIO[A](e: EitherT[IO,Err,A]): Check[A] = {
+    val ea: Check[Either[Err,A]] = EitherT.liftF(WriterT.liftF(ReaderT.liftF(ReaderT.liftF(e.value))))
+    for {
+      either <- ea
+      r <- either.fold(err(_), ok)
+    } yield r
+  }
+    
 
 
   def orElse[A](c1: Check[A], c2: => Check[A]): Check[A] =
@@ -302,8 +314,9 @@ abstract class CheckerCats extends Checker {
   //implicit val monadCheck = implicitly[Monad[Check]]
   protected lazy val mWriterEC = implicitly[Monad[WriterEC]]
 
-  def run[A](c: Check[A])(config: Config)(env: Env): (Log, Either[Err, A]) =
+  def run[A](c: Check[A])(config: Config)(env: Env): IO[(Log, Either[Err, A])] = {
     c.value.run.run(env).run(config)
+  }
 
   def mkErr[F[_]: Applicative](e: Err): F[Err] =
     Applicative[F].pure(e)
@@ -369,7 +382,7 @@ object CheckerCatsStr extends CheckerCats {
 
   def c0: Config = Map[String, String]()
   def e0: Env = Map[String, Int]()
-  def run0[A](c: Check[A]): (Log, Either[Err, A]) =
+  def run0[A](c: Check[A]): IO[(Log, Either[Err, A])] =
     run(c)(c0)(e0)
 
   def c1: Check[Int] = logStr("one") *> ok(1)

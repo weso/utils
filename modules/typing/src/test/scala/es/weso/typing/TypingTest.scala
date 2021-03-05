@@ -1,11 +1,9 @@
 package es.weso.typing
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should._
 
-/**
- * Created by Labra on 21/11/2016.
- */
-class TypingTest extends FunSpec with Matchers {
+class TypingTest extends AnyFunSpec with Matchers {
 
   case class K(s: String)
   case class V(s: String)
@@ -93,7 +91,70 @@ class TypingTest extends FunSpec with Matchers {
       t2.getOkValues(K("x")) should contain theSameElementsAs List()
       t2.getFailedValues(K("x")) should contain theSameElementsAs List((V("a")))
     }
-
-
   }
+
+  describe(s"Remove value") {
+    it(s"Should remove values") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty.addType(K("x"), V("a"), List(Ev("e1")))
+      val t2 = t1.removeValue(K("x"),V("a"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List()
+    }
+
+    it(s"Should remove values 2") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty
+        .addType(K("x"), V("a"), List(Ev("e1")))
+        .addType(K("x"), V("b"), List(Ev("e2")))
+      val t2 = t1.removeValue(K("x"),V("a"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("b"))
+    }
+
+    it(s"Should remove no values if it doesn't exist") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty
+        .addType(K("x"), V("a"), List(Ev("e1")))
+        .addType(K("x"), V("b"), List(Ev("e2")))
+      val t2 = t1.removeValue(K("y"),V("a"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("a"),V("b"))
+      t2.getOkValues(K("y")) should contain theSameElementsAs List()
+    }
+
+    it(s"Should remove no values if it doesn't have that value") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty
+        .addType(K("x"), V("a"), List(Ev("e1")))
+        .addType(K("y"), V("b"), List(Ev("e2")))
+      val t2 = t1.removeValue(K("x"),V("b"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("a"))
+      t2.getOkValues(K("y")) should contain theSameElementsAs List(V("b"))
+    }
+  } 
+  describe(s"removeValuesWith") {
+    it(s"Should remove no values if it doesn't have that value") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty
+        .addType(K("x"), V("a"), List(Ev("e1")))
+        .addType(K("x"), V("b"), List(Ev("e2")))
+        .addType(K("y"), V("a"), List(Ev("e3")))
+      val t2 = t1.removeValuesWith(v => v.s == "a")  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("b"))
+      t2.getOkValues(K("y")) should contain theSameElementsAs List()
+    }
+  } 
+
+  describe(s"negateValuesWith") {
+    it(s"Should negate values") {
+      val t1: Typing[K, V, Er, Ev] =
+        Typing.empty
+        .addType(K("x"), V("a"), List(Ev("e1")))
+        .addType(K("x"), V("b"), List(Ev("e2")))
+        .addType(K("y"), V("a"), List(Ev("e3")))
+      val t2 = t1.negateValuesWith(v => v.s == "a", Er("e"))  
+      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("b"))
+      t2.getOkValues(K("y")) should contain theSameElementsAs List()
+      t2.getFailedValues(K("x")) should contain theSameElementsAs List(V("a"))
+    }
+  }  
+
 }

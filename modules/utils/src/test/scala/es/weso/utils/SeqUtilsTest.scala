@@ -1,8 +1,10 @@
 package es.weso.utils
 import SeqUtils._
-import org.scalatest._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 
-class SeqUtilsTest extends FunSpec with Matchers {
+
+class SeqUtilsTest extends AnyFunSpec with Matchers {
   describe("Transpose") {
     it("Should check three elements") {
       val xs: List[(Char, Set[Int])] =

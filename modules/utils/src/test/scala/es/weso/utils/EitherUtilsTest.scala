@@ -1,9 +1,11 @@
 package es.weso.utils
 
 import es.weso.utils.EitherUtils._
-import org.scalatest._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 
-class EitherUtilsTest extends FunSpec with Matchers {
+
+class EitherUtilsTest extends AnyFunSpec with Matchers {
 
   describe(s"EitherUtils sequence with no message") {
     it(s"Calculates a sequence") {

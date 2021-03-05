@@ -1,8 +1,9 @@
 package es.weso.utils.test
 import io.circe.Json
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should._
 
-class JsonMatchersTest extends FunSpec with Matchers with JsonMatchers {
+class JsonMatchersTest extends AnyFunSpec with Matchers with JsonMatchers {
 
   describe("Simple Json test") {
     it(s"Should check two json values") {

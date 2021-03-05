@@ -1,6 +1,7 @@
 package es.weso.typing
 import cats._
 import cats.implicits._
+import collection._
 
 abstract class Typing[Key, Value, Err, Evidence] {
 
@@ -13,7 +14,7 @@ abstract class Typing[Key, Value, Err, Evidence] {
   def hasType(key: Key, value: Value): Boolean =
     getOkValues(key) contains value
 
-  def getValues(key: Key): Map[Value, TypingResult[Err, Evidence]]
+  def getValues(key: Key): immutable.Map[Value, TypingResult[Err, Evidence]]
 
   def getKeys: Seq[Key]
 
@@ -29,6 +30,12 @@ abstract class Typing[Key, Value, Err, Evidence] {
   def addEvidence(key: Key, value: Value, es: Evidence): Typing[Key, Value, Err, Evidence]
 
   def addNotEvidence(key: Key, value: Value, e: Err): Typing[Key, Value, Err, Evidence]
+
+  def removeValue(key: Key, value: Value): Typing[Key, Value, Err, Evidence] 
+
+  def removeValuesWith(cond: Value => Boolean): Typing[Key,Value,Err,Evidence]
+
+  def negateValuesWith(cond: Value => Boolean, err: Err): Typing[Key,Value,Err,Evidence]
 
   def addType(key: Key, value: Value,
     evidences: List[Evidence] = List()): Typing[Key, Value, Err, Evidence] =
@@ -62,7 +69,7 @@ object Typing {
    *  Creates an empty typing
    */
   def empty[Key, Value, Err, Evidence]: Typing[Key, Value, Err, Evidence] = {
-    val m: Map[Key, Map[Value, TypingResult[Err, Evidence]]] = Map()
+    val m: immutable.Map[Key, immutable.Map[Value, TypingResult[Err, Evidence]]] = immutable.Map()
     TypingMap(m)
   }
 
@@ -88,7 +95,8 @@ object Typing {
                 }
               }.mkString("\n")
             }
-          }.mkString("\n")
+        }.mkString("\n")
+        case _ => "Unknown type of Typing"
       }
   }
   }

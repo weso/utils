@@ -1,6 +1,8 @@
 *.class
 *.log
 .bloop
+metals.sbt
+.bsp
 
 # sbt specific
 dist/*

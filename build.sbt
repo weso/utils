@@ -144,6 +144,7 @@ lazy val utilsTest = project
     libraryDependencies ++= Seq(
     catsCore,
     catsKernel,
+    munitEffects % Test
     )
   )
 

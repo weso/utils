@@ -1,6 +1,6 @@
 lazy val scala212 = "2.12.13"
 lazy val scala213 = "2.13.5"
-lazy val scala3   = "3.0.0-RC1"
+lazy val scala3   = "3.0.0-M3"
 lazy val supportedScalaVersions = List(
   scala212, 
   scala213, 
@@ -13,7 +13,7 @@ lazy val catsVersion             = "2.4.2"
 lazy val catsEffectVersion       = "3.0.0-RC2"
 lazy val commonsTextVersion      = "1.8"
 lazy val circeVersion            = "0.14.0-M4"
-lazy val diffsonVersion          = "4.0.0"
+lazy val diffsonVersion          = "4.0.3"
 lazy val fs2Version              = "3.0.0-M7"
 // lazy val jenaVersion             = "3.13.1"
 lazy val munitVersion            = "0.7.22"
@@ -21,7 +21,7 @@ lazy val munitEffectVersion      = "0.13.1"
 lazy val jgraphtVersion          = "1.3.1"
 lazy val logbackVersion          = "1.2.3"
 lazy val loggingVersion          = "3.9.2"
-lazy val pprintVersion           = "0.5.6"
+lazy val pprintVersion           = "0.6.0"
 // lazy val rdf4jVersion            = "3.0.0"
 lazy val scalacheckVersion       = "1.14.0"
 lazy val scalacticVersion        = "3.2.5"
@@ -32,7 +32,7 @@ lazy val scallopVersion          = "3.3.1"
 lazy val sextVersion             = "0.2.6"
 lazy val typesafeConfigVersion   = "1.3.4"
 // lazy val xercesVersion           = "2.12.0"
-lazy val collectionCompatVersion = "2.1.3"
+lazy val collectionCompatVersion = "2.4.2"
 
 // Compiler plugin dependency versions
 lazy val simulacrumVersion    = "1.0.0"
@@ -100,7 +100,18 @@ lazy val utilsRoot = project
     fork                      := true,
   //  parallelExecution in Test := false,
     crossScalaVersions := Nil,
-    publish / skip := true
+    publish / skip := true,
+    ThisBuild / githubWorkflowBuild := Seq(
+     WorkflowStep.Sbt(
+      List("clean", "coverage", "test", "coverageReport", "scalafmtCheckAll"),
+      id = None,
+      name = Some("Test")
+     ),
+    WorkflowStep.Use(
+     UseRef.Public("codecov", "codecov-action", "e156083f13aff6830c92fc5faa23505779fbf649"), // v1.2.1
+     name = Some("Upload code coverage")
+    )
+   )    
   )
 
 lazy val typing = project
@@ -254,6 +265,8 @@ lazy val ghPagesSettings = Seq(
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   organization := "es.weso",
   resolvers ++= Seq(
+    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("snapshots"),
     Resolver.githubPackages("weso")
   ), 
   coverageHighlighting := true,

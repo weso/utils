@@ -83,9 +83,16 @@ def priorTo2_13(scalaVersion: String): Boolean =
 
 lazy val utilsRoot = project
   .in(file("."))
-  .enablePlugins(ScalaUnidocPlugin, SbtNativePackager, WindowsPlugin, JavaAppPackaging, LauncherJarPlugin)
-  .settings(commonSettings, packagingSettings, publishSettings, ghPagesSettings, wixSettings)
-  .aggregate(typing, validating, utilsTest, utils)
+  .enablePlugins(ScalaUnidocPlugin, 
+    // SbtNativePackager, WindowsPlugin, JavaAppPackaging, LauncherJarPlugin
+  )
+  .settings(commonSettings, 
+     // packagingSettings
+     publishSettings, 
+     // ghPagesSettings, 
+     // wixSettings
+     )
+  .aggregate(typing, validating, utilsTest, utils, testsuite)
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(noDocProjects: _*),
     libraryDependencies ++= Seq(
@@ -126,6 +133,23 @@ lazy val typing = project
     pprint
     )
   )
+
+lazy val testsuite = project
+  .in(file("modules/testsuite"))
+  .dependsOn(utils)
+  .settings(commonSettings, publishSettings)
+  .settings(
+    crossScalaVersions := supportedScalaVersions,
+    libraryDependencies ++= Seq(
+    catsCore,
+    catsKernel,
+    catsEffect,
+    pprint,
+    munit % Test,
+    munitEffects % Test
+    ), 
+    testFrameworks += new TestFramework("munit.Framework")
+  )  
 
 lazy val utilsTest = project
   .in(file("modules/utilsTest"))
@@ -205,7 +229,7 @@ lazy val sharedDependencies = Seq(
   )
 )
 
-lazy val packagingSettings = Seq(
+/* lazy val packagingSettings = Seq(
   mainClass in Compile        := None,
   mainClass in assembly       := None,
   test in assembly            := {},
@@ -213,7 +237,7 @@ lazy val packagingSettings = Seq(
   packageSummary in Linux     := name.value,
   packageSummary in Windows   := name.value,
   packageDescription          := name.value
-)
+) */
 
 val compilerOptions = Seq(
   "-deprecation",
@@ -250,24 +274,20 @@ lazy val compilationSettings = Seq(
   // format: on
 )
 
-lazy val wixSettings = Seq(
+/* lazy val wixSettings = Seq(
   wixProductId        := "39b564d5-d381-4282-ada9-87244c76e14b",
   wixProductUpgradeId := "6a710435-9af4-4adb-a597-98d3dd0bade1"
 // The same numbers as in the docs?
 // wixProductId := "ce07be71-510d-414a-92d4-dff47631848a",
 // wixProductUpgradeId := "4552fb0e-e257-4dbd-9ecb-dba9dbacf424"
-)
-
-lazy val ghPagesSettings = Seq(
-//  git.remoteRepo := "git@github.com:labra/shaclex.git"
-)
+) */
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   organization := "es.weso",
   resolvers ++= Seq(
+    Resolver.githubPackages("weso"),
     Resolver.sonatypeRepo("releases"),
-    Resolver.sonatypeRepo("snapshots"),
-    Resolver.githubPackages("weso")
+    Resolver.sonatypeRepo("snapshots")
   ), 
   coverageHighlighting := true,
   githubOwner := "weso", 

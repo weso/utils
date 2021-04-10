@@ -1,21 +1,21 @@
 package es.weso.utils.json
 import io.circe._
-import diffson._
-import diffson.lcs._
-import diffson.circe._
-import diffson.jsonpatch._
-import diffson.jsonpatch.lcsdiff._
+// import diffson._
+// import diffson.lcs._
+// import diffson.circe._
+// import diffson.jsonpatch._
+// import diffson.jsonpatch.lcsdiff._
 /*
  * Obtains a diff between 2 Jsons
  */
 object JsonCompare {
 
-  implicit val lcs = new Patience[Json]
+  // implicit val lcs = new Patience[Json]
 
 /*  def jsonDiff(json1: Json, json2: Json) = {
     JsonDiff.diff(json1, json2, false)
   } */
-  def jsonDiff(json1: Json, json2: Json): JsonPatch[Json] = diff(json1, json2)
+  // def jsonDiff(json1: Json, json2: Json): JsonPatch[Json] = diff(json1, json2)
 
   /**
    * Obtains a diff between 2 Jsons

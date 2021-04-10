@@ -1,12 +1,12 @@
 package es.weso.utils.test
 
-import org.scalatest.matchers.{MatchResult, Matcher}
+// import org.scalatest.matchers.{MatchResult, Matcher}
 import io.circe._
 import io.circe.parser._
-import diffson._
-import diffson.lcs._
-import diffson.circe._
-import diffson.jsonpatch.lcsdiff._
+// import diffson._
+// import diffson.lcs._
+// import diffson.circe._
+// import diffson.jsonpatch.lcsdiff._
 
 /**
 * JSONMatchers: some parts of this code have been taken from

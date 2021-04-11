@@ -1,32 +1,30 @@
 package es.weso.utils.test
 import io.circe.Json
-import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should._
+import munit._
 
-class JsonMatchersTest extends AnyFunSpec with Matchers with JsonMatchers {
+class JsonMatchersTest extends FunSuite with JsonMatchers {
 
-  describe("Simple Json test") {
-    it(s"Should check two json values") {
+  test("Simple Json test. Should check two json values") {
       val json1 =
         """|{ "key1": 24 }
            |""".stripMargin
       val expected1 =
         """|{ "key1": 24 }
            |""".stripMargin
-     json1 should matchJson(expected1)
-    }
+     assertJsonStrEquals(json1, expected1)
+  }
 
-    it(s"Should check two different json values dont match") {
+  test(s"Should check two different json values dont match") {
       val json1 =
         """|{ "key1": 24 }
            |""".stripMargin
       val expected1 =
         """|{ "key1": 23 }
            |""".stripMargin
-      json1 shouldNot matchJson(expected1)
-    }
+      assertJsonStrEquals(json1, expected1)
+  }
 
-    it(s"Should check a Json with another Json values dont match") {
+  test(s"Should check a Json with another Json values dont match") {
       val json = Json.fromFields(List(
         ("key1",Json.fromString("value1")),
         ("key2",Json.fromString("value2"))
@@ -35,9 +33,7 @@ class JsonMatchersTest extends AnyFunSpec with Matchers with JsonMatchers {
         ("key2",Json.fromString("value2")),
         ("key1",Json.fromString("value1"))
       ))
-      json should be (expected)
-    }
-
+      assertJsonEquals(json, expected)
   }
 
 

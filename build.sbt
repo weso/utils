@@ -4,7 +4,7 @@ lazy val scala3   = "3.0.0-RC2"
 lazy val supportedScalaVersions = List(
   scala212, 
   scala213, 
-  scala3
+//  scala3
  )
 
 // Dependency versions
@@ -16,8 +16,8 @@ lazy val circeVersion            = "0.14.0-M5"
 // lazy val diffsonVersion          = "4.0.3"
 lazy val fs2Version              = "3.0.0"
 // lazy val jenaVersion             = "3.13.1"
-lazy val munitVersion            = "0.7.2"
-lazy val munitEffectVersion      = "0.13.1"
+lazy val munitVersion            = "0.7.23"
+lazy val munitEffectVersion      = "1.0.0"
 // lazy val jgraphtVersion          = "1.3.1"
 // lazy val logbackVersion          = "1.2.3"
 // lazy val loggingVersion          = "3.9.2"
@@ -145,10 +145,7 @@ lazy val testsuite = project
     catsKernel,
     catsEffect,
     pprint,
-    munit % Test,
-    munitEffects % Test
     ), 
-    testFrameworks += new TestFramework("munit.Framework")
   )  
 
 lazy val utilsTest = project
@@ -179,7 +176,6 @@ lazy val utilsTest = project
     libraryDependencies ++= Seq(
     catsCore,
     catsKernel,
-    munitEffects % Test
     )
   )
 
@@ -188,8 +184,7 @@ lazy val utils = project
   .settings(commonSettings, publishSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
-        libraryDependencies ++= Seq(
-//      eff,
+     libraryDependencies ++= Seq(
       circeCore,
       circeGeneric,
       circeParser,
@@ -198,14 +193,7 @@ lazy val utils = project
       catsEffect,
       fs2,fs2io,
       pprint,
-  //    collectionCompat,
-  //    diffsonCirce,
-      munit % Test,
-      munitEffects % Test,
-//      xercesImpl,
-  //    commonsText
     ),
-    testFrameworks += new TestFramework("munit.Framework")
   )
 
 /* ********************************************************
@@ -224,7 +212,10 @@ lazy val noPublishSettings = Seq(
 
 lazy val sharedDependencies = Seq(
   libraryDependencies ++= Seq(
-  )
+    munit % Test,
+    munitEffects % Test
+  ),
+  testFrameworks += new TestFramework("munit.Framework")
 )
 
 /* lazy val packagingSettings = Seq(

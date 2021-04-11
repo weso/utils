@@ -1,12 +1,10 @@
 package es.weso.utils
 
-import org.scalatest.funspec._
-import org.scalatest.matchers.should._
+import munit._
 import StrUtils._
 
-class StrUtilsTest extends AnyFunSpec with Matchers {
+class StrUtilsTest extends FunSuite {
 
-  describe("StrUtils unescape") {
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\", "\\")
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\tpepe", "\tpepe")
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral, "\\bpepe", "\bpepe")
@@ -20,51 +18,37 @@ class StrUtilsTest extends AnyFunSpec with Matchers {
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral,"pe\\-pe", "pe-pe")
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral,"\\\\","\\")
     shouldConvert("unescapeStringLiteral", unescapeStringLiteral,"\\U0001D4B8","\uD835\uDCB8")
-  }
 
-  describe("StrUtils escapeStringLiteral") {
     shouldConvert("escapeStringLiteral", escapeStringLiteral, "\tpepe", "\\tpepe")
     shouldConvert("escapeStringLiteral", escapeStringLiteral, "pepe1", "pepe1")
     shouldConvert("escapeStringLiteral", escapeStringLiteral, "1pepe1", "1pepe1")
     shouldConvert("escapeStringLiteral", escapeStringLiteral, "2\u00ac1", "2\u00ac1")
-    // shouldUnescape("\\U0001D4B8","\uD835\uDCB8")
-  }
 
-  describe("StrUtils unescapePattern") {
     shouldConvert("unescapePattern", unescapePattern, "\\u0061", "a")
     shouldConvert("unescapePattern", unescapePattern, "\\\\u0061", "\\\\u0061")
-  }
 
-  describe("StrUtils unescapeIRI") {
     shouldConvert("unescapeIRI", unescapeIRI, "\\thttp://www.w3.org/1999/02/22-rdf-syntax-ns",
       "\thttp://www.w3.org/1999/02/22-rdf-syntax-ns")
-  }
 
-  describe("StrUtils unescapeCode") {
     shouldConvert("unescapeCode", unescapeCode, "\\\"Hello\\r\\n\\tW\"orld\\n",
       "\"Hello\r\n\tW\"orld\n")
-  }
 
-  describe("StrUtils escapePattern") {
     shouldConvert("escapePattern", escapePattern, "\tpepe", "\tpepe")
     shouldConvert("escapePattern", escapePattern, "pepe1", "pepe1")
     shouldConvert("escapePattern", escapePattern, "1pepe1", "1pepe1")
     shouldConvert("escapePattern", escapePattern, "2\u00ac1", "2\u00ac1")
     shouldConvert("escapePattern", escapePattern, "2\\^1", "2\\^1")
     // shouldUnescape("\\U0001D4B8","\uD835\uDCB8")
-  }
 
-  describe("StrUtils escapeDot") {
     shouldConvert("escapeDot", escapeDot, "pepe", "pepe")
     shouldConvert("escapeDot", escapeDot, "pepe1", "pepe1")
     shouldConvert("escapeDot", escapeDot, "1pepe1", "1pepe1")
     shouldConvert("escapeDot", escapeDot, "2\"1", "2&#34;1")
     shouldConvert("escapeDot", escapeDot, "2¥1", "2&#165;1")
-  }
 
   def shouldConvert(name: String, cnv: String => String, str: String, expected: String): Unit = {
-    it(s"$name should convert $str and obtain $expected") {
-      cnv(str) should be(expected)
+    test(s"$name should convert $str and obtain $expected") {
+      assertEquals(cnv(str), expected)
     }
   }
 }

@@ -4,22 +4,17 @@ import cats._
 import cats.implicits._
 import io.circe.syntax._
 import io.circe.parser._
-import JsonCompare._
-import munit._
 
 trait JsonTest {
 
- def decodeJsonSchemaEncodeEquals[A: Encoder: Decoder: Show](str: String): Unit = {
+ def decodeJsonEncodeEquals[A: Encoder: Decoder: Show](str: String): Either[String,Unit] = {
     for {
-      json   <- parse(str).leftMap(e => s"Error parsing $str: $e")
-      schema <- json.as[A].leftMap(e => s"Error obtainning Schema from Json: $e\nJson:\n${json.show}")
-      jsonEncoded = schema.asJson
+      json   <- parse(str).leftMap(e => s"decodeJsonEncodeEquals\nError decoding $str: $e")
+      value <- json.as[A].leftMap(e => s"decodeJsonEncodeEquals\nError obtainning encoding value from decoded Json\nError: $e\nJson decoded:\n${json.show}\nString: $str")
+      jsonEncoded = value.asJson
       check <- if (json.equals(jsonEncoded)) Right(())
       else
-        Left(
-          s"Jsons and different: Diff=${jsonDiff(json, jsonEncoded)}\nJson:\n${json.show}\nEncoded:\n${jsonEncoded.show}\nSchema:${schema.show}")
+        Left(s"decodeJsonEncodeEquals: Jsons and different: \nJson1:\n${json.spaces2}\nEncoded:\n${jsonEncoded.spaces2}\nValue:${value.show}")
     } yield check
-  }.fold(e => fail(e), s => {})
-
-
+  } 
 }

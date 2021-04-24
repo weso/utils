@@ -75,7 +75,7 @@ class Index extends React.Component {
       coreModuleName,
       latestVersion,
       scalaPublishVersions
-    } = variables;
+    } = variables; 
 
     const latestVersionBadge = latestVersion
       .replace("-", "--")
@@ -95,20 +95,7 @@ class Index extends React.Component {
       </Container>
     );
 
-    const index = `[![GitHub Actions](https://img.shields.io/github/workflow/status/fd4s/fs2-kafka/ci)](https://github.com/fd4s/fs2-kafka/actions) [![Gitter](https://img.shields.io/gitter/room/fd4s/fs2-kafka.svg?colorB=36bc97)](https://gitter.im/fd4s/fs2-kafka) [![Version](https://img.shields.io/badge/version-v${latestVersionBadge}-orange.svg)](https://index.scala-lang.org/fd4s/fs2-kafka)
-
-Functional streams for Kafka with [FS2](https://fs2.io) and the official Apache Kafka client.<br>
-Project is under active development. Feedback and contributions welcome.
-
-### Getting Started
-To get started with [sbt](https://scala-sbt.org), simply add the following line to your \`build.sbt\` file.
-
-\`\`\`scala
-libraryDependencies += "${organization}" %% "${coreModuleName}" % "${latestVersion}"
-\`\`\`
-
-Published for Scala ${scalaPublishVersions}. For changes, refer to the [release notes](https://github.com/fd4s/fs2-kafka/releases).
-`.trim();
+    const index = `# Utils at index.js`.trim();
 
     return (
       <div>

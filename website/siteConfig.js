@@ -1,6 +1,6 @@
 const repoUrl = "https://github.com/weso/utils";
 
-const apiUrl = "/utils/api/weso/utils/index.html";
+const apiUrl = "/utils/api/es/weso/index.html";
 
 // See https://docusaurus.io/docs/site-config for available options.
 const siteConfig = {
@@ -29,7 +29,7 @@ const siteConfig = {
     secondaryColor: "#153243"
   },
 
-  copyright: `Copyright © 2018-${new Date().getFullYear()} OVO Energy Limited.`,
+  copyright: `Copyright © 2021-${new Date().getFullYear()} WESO Research group.`,
 
   highlight: { theme: "github" },
 

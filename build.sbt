@@ -139,10 +139,10 @@ lazy val docs = project
     ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(noDocProjects: _*)
    )
   .dependsOn(utils)
-  .enablePlugins(ScalaUnidocPlugin, MdocPlugin, DocusaurusPlugin)
+  .enablePlugins(MdocPlugin, DocusaurusPlugin, ScalaUnidocPlugin)
 
 lazy val mdocSettings = Seq(
-  mdoc := (Compile / run).evaluated,
+//  mdoc := (Compile / run).evaluated,
   mdocVariables := Map(
     "VERSION" -> version.value
   ),

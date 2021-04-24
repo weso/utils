@@ -1,160 +1,150 @@
 package es.weso.typing
 
-import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should._
+import munit._
 
-class TypingTest extends AnyFunSpec with Matchers {
+class TypingTest extends FunSuite {
 
   case class K(s: String)
   case class V(s: String)
   case class Er(s: String)
   case class Ev(e: String)
 
-  describe("Typing - getEvidences") {
-    it("get evidences of empty map = None") {
+  test("get evidences of empty map = None") {
       val m: Typing[K, V, Er, Ev] = Typing.empty
-      m.getEvidences(K("x"), V("v")) should be(None)
-    }
+    assertEquals(m.getEvidences(K("x"), V("v")), None)
+  }
 
-    it("get evidences of single map(x -> (v, e1)) = e1") {
+  test("get evidences of single map(x -> (v, e1)) = e1") {
       val m: Typing[K, V, Er, Ev] = Typing.empty.
         addType(K("x"), V("v"), List(Ev("e1")))
-      m.getEvidences(K("x"), V("v")) should be(Some(List(Ev("e1"))))
-    }
+    assertEquals(m.getEvidences(K("x"), V("v")), Some(List(Ev("e1"))))
+  }
 
-    it("get evidences of (x,v) in (x -> (v, e1), y -> (w,e2)) = List(e1)") {
+  test("get evidences of (x,v) in (x -> (v, e1), y -> (w,e2)) = List(e1)") {
       val m: Typing[K, V, Er, Ev] = Typing.empty
         .addType(K("x"), V("v"), List(Ev("e1")))
         .addType(K("y"), V("w"), List(Ev("e2")))
 
-      m.getEvidences(K("x"), V("v")) should be(Some(List(Ev("e1"))))
-    }
+   assertEquals(m.getEvidences(K("x"), V("v")), Some(List(Ev("e1"))))
+  }
 
-    it("get evidences of (y,w) in (x -> (v, e1), y -> (w,e2)) = List(e2)") {
+  test("get evidences of (y,w) in (x -> (v, e1), y -> (w,e2)) = List(e2)") {
       val m: Typing[K, V, Er, Ev] = Typing.empty
         .addType(K("x"), V("v"), List(Ev("e1")))
         .addType(K("y"), V("w"), List(Ev("e2")))
-      m.getEvidences(K("y"), V("w")) should be(Some(List(Ev("e2"))))
-    }
+    assertEquals(m.getEvidences(K("y"), V("w")), Some(List(Ev("e2"))))
+  }
 
-    it("get evidences of (y,v) in (x -> (v, e1), y -> (w,e2)) = None") {
+  test("get evidences of (y,v) in (x -> (v, e1), y -> (w,e2)) = None") {
       val m: Typing[K, V, Er, Ev] =
         Typing
           .empty
           .addType(K("x"), V("v"), List(Ev("e1")))
           .addType(K("y"), V("w"), List(Ev("e2")))
-      m.getEvidences(K("y"), V("v")) should be(None)
-    }
+   assertEquals(m.getEvidences(K("y"), V("v")), None)
   }
 
-  describe("Typing - combineTypings") {
-    it("Can combine 2 empty typings") {
+  test("Can combine 2 empty typings") {
       val t1: Typing[K, V, Er, Ev] = Typing.empty
       val t2: Typing[K, V, Er, Ev] = Typing.empty
-      t1.combineTyping(t2) should be(t1)
-    }
+    assertEquals(t1.combineTyping(t2), t1)
+  }
 
-    it("Can combine empty with (x -> (v,e1)) and return (x -> (v,e1))") {
+  test("Can combine empty with (x -> (v,e1)) and return (x -> (v,e1))") {
       val t1: Typing[K, V, Er, Ev] = Typing.empty
       val t2: Typing[K, V, Er, Ev] = Typing.empty
         .addType(K("x"), V("v"), List(Ev("e1")))
-      t1.combineTyping(t2) should be(t2)
-    }
-    it("Can combine (x -> (v,e1)) with empty and return (x -> (v,e1))") {
+      assertEquals(t1.combineTyping(t2), t2)
+  }
+  
+  test("Can combine (x -> (v,e1)) with empty and return (x -> (v,e1))") {
       val t1: Typing[K, V, Er, Ev] = Typing.empty
       val t2: Typing[K, V, Er, Ev] = Typing.empty
         .addType(K("x"), V("v"), List(Ev("e1")))
-      t2.combineTyping(t1) should be(t2)
-    }
+      assertEquals(t2.combineTyping(t1), t2)
   }
 
-  describe("Add not evidences") {
-    it(s"Should add not evidence when there is no failed value") {
+  test("Should add not evidence when there is no failed value") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty.addType(K("x"), V("a"), List(Ev("e1")))
       val t2 = t1.addNotEvidence(K("x"), V("b"), Er("E1"))
-      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("a"))
-      t2.getFailedValues(K("x")) should contain theSameElementsAs List(V("b"))
-    }
-    it(s"Should add not evidence when there is failed value") {
+      assertEquals(t2.getOkValues(K("x")), Set(V("a")))
+      assertEquals(t2.getFailedValues(K("x")), Set(V("b")))
+  }
+  
+  test(s"Should add not evidence when there is failed value") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty.addType(K("x"), V("a"), List(Ev("e1")))
       val t2 = t1.addNotEvidence(K("x"), V("b"), Er("E1"))
-      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("a"))
-      t2.getFailedValues(K("x")) should contain theSameElementsAs List(V("b"))
-    }
+      assertEquals(t2.getOkValues(K("x")), Set(V("a")))
+      assertEquals(t2.getFailedValues(K("x")), Set(V("b")))
+  }
 
-    it(s"Should add not evidence when there is a positive value") {
+  test(s"Should add not evidence when there is a positive value") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty.addType(K("x"), V("a"), List(Ev("e1")))
       val t2 = t1.addNotEvidence(K("x"), V("a"), Er("E1"))
-      t2.getOkValues(K("x")) should contain theSameElementsAs List()
-      t2.getFailedValues(K("x")) should contain theSameElementsAs List((V("a")))
-    }
+      assertEquals(t2.getOkValues(K("x")).toList, List())
+      assertEquals(t2.getFailedValues(K("x")), Set((V("a"))))
   }
 
-  describe(s"Remove value") {
-    it(s"Should remove values") {
+  test(s"Should remove values") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty.addType(K("x"), V("a"), List(Ev("e1")))
       val t2 = t1.removeValue(K("x"),V("a"))  
-      t2.getOkValues(K("x")) should contain theSameElementsAs List()
-    }
+      assertEquals(t2.getOkValues(K("x")).toList, List())
+  }
 
-    it(s"Should remove values 2") {
+  test(s"Should remove values 2") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty
         .addType(K("x"), V("a"), List(Ev("e1")))
         .addType(K("x"), V("b"), List(Ev("e2")))
       val t2 = t1.removeValue(K("x"),V("a"))  
-      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("b"))
-    }
+      assertEquals(t2.getOkValues(K("x")).toList, List(V("b")))
+  }
 
-    it(s"Should remove no values if it doesn't exist") {
+  test(s"Should remove no values if it doesn't exist") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty
         .addType(K("x"), V("a"), List(Ev("e1")))
         .addType(K("x"), V("b"), List(Ev("e2")))
       val t2 = t1.removeValue(K("y"),V("a"))  
-      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("a"),V("b"))
-      t2.getOkValues(K("y")) should contain theSameElementsAs List()
-    }
+      assertEquals(t2.getOkValues(K("x")).toList, List(V("a"),V("b")))
+      assertEquals(t2.getOkValues(K("y")).toList, List())
+  }
 
-    it(s"Should remove no values if it doesn't have that value") {
+  test(s"Should remove no values if it doesn't have that value") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty
         .addType(K("x"), V("a"), List(Ev("e1")))
         .addType(K("y"), V("b"), List(Ev("e2")))
       val t2 = t1.removeValue(K("x"),V("b"))  
-      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("a"))
-      t2.getOkValues(K("y")) should contain theSameElementsAs List(V("b"))
-    }
+      assertEquals(t2.getOkValues(K("x")).toList, List(V("a")))
+      assertEquals(t2.getOkValues(K("y")).toList, List(V("b")))
   } 
-  describe(s"removeValuesWith") {
-    it(s"Should remove no values if it doesn't have that value") {
+  
+  test("Should remove no values if it doesn't have that value") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty
         .addType(K("x"), V("a"), List(Ev("e1")))
         .addType(K("x"), V("b"), List(Ev("e2")))
         .addType(K("y"), V("a"), List(Ev("e3")))
       val t2 = t1.removeValuesWith(v => v.s == "a")  
-      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("b"))
-      t2.getOkValues(K("y")) should contain theSameElementsAs List()
-    }
+      assertEquals(t2.getOkValues(K("x")).toList, List(V("b")))
+      assertEquals(t2.getOkValues(K("y")).toList, List())
   } 
 
-  describe(s"negateValuesWith") {
-    it(s"Should negate values") {
+  test(s"Should negate values") {
       val t1: Typing[K, V, Er, Ev] =
         Typing.empty
         .addType(K("x"), V("a"), List(Ev("e1")))
         .addType(K("x"), V("b"), List(Ev("e2")))
         .addType(K("y"), V("a"), List(Ev("e3")))
       val t2 = t1.negateValuesWith(v => v.s == "a", Er("e"))  
-      t2.getOkValues(K("x")) should contain theSameElementsAs List(V("b"))
-      t2.getOkValues(K("y")) should contain theSameElementsAs List()
-      t2.getFailedValues(K("x")) should contain theSameElementsAs List(V("a"))
-    }
+      assertEquals(t2.getOkValues(K("x")).toList, List(V("b")))
+      assertEquals(t2.getOkValues(K("y")).toList, List())
+      assertEquals(t2.getFailedValues(K("x")).toList, List(V("a")))
   }  
 
 }

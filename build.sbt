@@ -4,76 +4,28 @@ lazy val scala3   = "3.0.0-RC2"
 lazy val supportedScalaVersions = List(
   scala212, 
   scala213, 
-//  scala3
+  scala3
  )
 
 // Dependency versions
-// lazy val antlrVersion            = "4.7.1"
 lazy val catsVersion             = "2.5.0"
 lazy val catsEffectVersion       = "3.0.1"
-// lazy val commonsTextVersion      = "1.8"
 lazy val circeVersion            = "0.14.0-M5"
-// lazy val diffsonVersion          = "4.0.3"
-lazy val fs2Version              = "3.0.0"
-// lazy val jenaVersion             = "3.13.1"
+lazy val fs2Version              = "3.0.1"
 lazy val munitVersion            = "0.7.23"
-lazy val munitEffectVersion      = "1.0.0"
-// lazy val jgraphtVersion          = "1.3.1"
-// lazy val logbackVersion          = "1.2.3"
-// lazy val loggingVersion          = "3.9.2"
+lazy val munitEffectVersion      = "1.0.1"
 lazy val pprintVersion           = "0.6.4"
-// lazy val rdf4jVersion            = "3.0.0"
-// lazy val scalacheckVersion       = "1.14.0"
-// lazy val scalacticVersion        = "3.2.5"
-// lazy val scalaTestVersion        = "3.2.5"
-// lazy val scalaGraphVersion       = "1.11.5"
-// lazy val scalatagsVersion        = "0.6.7"
-// lazy val scallopVersion          = "3.3.1"
-// lazy val sextVersion             = "0.2.6"
-// lazy val typesafeConfigVersion   = "1.3.4"
-// lazy val xercesVersion           = "2.12.0"
-// lazy val collectionCompatVersion = "2.4.2"
-
-// Compiler plugin dependency versions
-// lazy val simulacrumVersion    = "1.0.0"
-// lazy val kindProjectorVersion = "0.9.5"
-// lazy val scalaMacrosVersion   = "2.1.1"
-
-// Dependency modules
-// lazy val antlr4            = "org.antlr"                  % "antlr4"               % antlrVersion
 lazy val catsCore          = "org.typelevel"              %% "cats-core"           % catsVersion
 lazy val catsKernel        = "org.typelevel"              %% "cats-kernel"         % catsVersion
 lazy val catsEffect        = "org.typelevel"              %% "cats-effect"         % catsEffectVersion
 lazy val circeCore         = "io.circe"                   %% "circe-core"          % circeVersion
 lazy val circeGeneric      = "io.circe"                   %% "circe-generic"       % circeVersion
 lazy val circeParser       = "io.circe"                   %% "circe-parser"        % circeVersion
-// lazy val commonsText       = "org.apache.commons"         %  "commons-text"        % commonsTextVersion
-// lazy val diffsonCirce      = "org.gnieh"                  %% "diffson-circe"       % diffsonVersion
 lazy val fs2               = "co.fs2"                     %% "fs2-core"            % fs2Version
 lazy val fs2io             = "co.fs2"                     %% "fs2-io"              % fs2Version
-// lazy val eff               = "org.atnos"                  %% "eff"                 % effVersion
-// lazy val jgraphtCore       = "org.jgrapht"                % "jgrapht-core"         % jgraphtVersion
-// lazy val logbackClassic    = "ch.qos.logback"             % "logback-classic"      % logbackVersion
-// lazy val jenaArq           = "org.apache.jena"            % "jena-arq"             % jenaVersion
-// lazy val jenaFuseki        = "org.apache.jena"            % "jena-fuseki-main"     % jenaVersion
 lazy val munit             = "org.scalameta"              %% "munit"               % munitVersion 
 lazy val munitEffects      = "org.typelevel"              %% "munit-cats-effect-3" % munitEffectVersion
 lazy val pprint            = "com.lihaoyi"                %% "pprint"              % pprintVersion             
-// lazy val rdf4j_runtime     = "org.eclipse.rdf4j"          % "rdf4j-runtime"        % rdf4jVersion
-
-// lazy val scalaLogging      = "com.typesafe.scala-logging" %% "scala-logging"       % loggingVersion
-// lazy val scallop           = "org.rogach"                 %% "scallop"             % scallopVersion
-// lazy val scalactic         = "org.scalactic"              %% "scalactic"           % scalacticVersion
-// lazy val scalacheck        = "org.scalacheck"             %% "scalacheck"          % scalacheckVersion
-// lazy val scalaTest         = "org.scalatest"              %% "scalatest"           % scalaTestVersion
-// lazy val scalatags         = "com.lihaoyi"                %% "scalatags"           % scalatagsVersion
-// lazy val selenium          = "org.seleniumhq.selenium"    % "selenium-java"        % seleniumVersion
-// lazy val htmlUnit          = "org.seleniumhq.selenium"    % "htmlunit-driver"      % seleniumVersion
-// lazy val sext              = "com.github.nikita-volkov"   % "sext"                 % sextVersion
-// lazy val typesafeConfig    = "com.typesafe"               % "config"               % typesafeConfigVersion
-// lazy val xercesImpl        = "xerces"                     % "xercesImpl"           % xercesVersion
-// lazy val simulacrum        = "org.typelevel"              %% "simulacrum"          % simulacrumVersion
-// lazy val collectionCompat  = "org.scala-lang.modules"     %% "scala-collection-compat" % collectionCompatVersion 
 
 def priorTo2_13(scalaVersion: String): Boolean =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -83,29 +35,12 @@ def priorTo2_13(scalaVersion: String): Boolean =
 
 lazy val utilsRoot = project
   .in(file("."))
-  .enablePlugins(ScalaUnidocPlugin, 
-    // SbtNativePackager, WindowsPlugin, JavaAppPackaging, LauncherJarPlugin
-  )
-  .settings(commonSettings, 
-     // packagingSettings
-     publishSettings, 
-     // ghPagesSettings, 
-     // wixSettings
-     )
+  .settings(commonSettings, publishSettings)
   .aggregate(typing, validating, utilsTest, utils, testsuite)
   .settings(
-    ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(noDocProjects: _*),
-    libraryDependencies ++= Seq(
-//      logbackClassic,
-//      scalaLogging,
-//      scallop,
-//      typesafeConfig,
-    ),
     ThisBuild / turbo := true,
-//    ThisBuild / scalaVersion := scala212,
     cancelable in Global      := true,
     fork                      := true,
-  //  parallelExecution in Test := false,
     crossScalaVersions := Nil,
     publish / skip := true,
     ThisBuild / githubWorkflowBuild := Seq(
@@ -196,6 +131,42 @@ lazy val utils = project
     ),
   )
 
+lazy val docs = project   
+  .in(file("utils-docs")) 
+  .settings(
+    noPublishSettings,
+    mdocSettings,
+    ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(noDocProjects: _*)
+   )
+  .dependsOn(utils)
+  .enablePlugins(ScalaUnidocPlugin, MdocPlugin, DocusaurusPlugin)
+
+lazy val mdocSettings = Seq(
+  mdoc := (Compile / run).evaluated,
+  mdocVariables := Map(
+    "VERSION" -> version.value
+  ),
+  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(utils),
+  ScalaUnidoc / unidoc / target := (LocalRootProject / baseDirectory).value / "website" / "static" / "api",
+  cleanFiles += (ScalaUnidoc / unidoc / target).value,
+  docusaurusCreateSite := docusaurusCreateSite
+    .dependsOn(Compile / unidoc)
+    .value,
+  docusaurusPublishGhpages :=
+    docusaurusPublishGhpages
+      .dependsOn(Compile / unidoc)
+      .value,
+  // format: off
+  ScalaUnidoc / unidoc / scalacOptions ++= Seq(
+    "-doc-source-url", s"https://github.com/weso/utils/tree/v${(ThisBuild / version).value}€{FILE_PATH}.scala",
+    "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath,
+    "-doc-title", "Utils",
+    "-doc-version", s"v${(ThisBuild / version).value}"
+  )
+  // format: on
+)
+
+
 /* ********************************************************
  ******************** Grouped Settings ********************
  **********************************************************/
@@ -235,7 +206,6 @@ val compilerOptions = Seq(
   "-language:existentials",
   "-language:higherKinds",
   "-unchecked",
-  "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
   "-Xfuture",
   "-Yno-predef",
@@ -243,22 +213,11 @@ val compilerOptions = Seq(
 )
 
 lazy val compilationSettings = Seq(
-  scalaVersion := scala213,
-  // format: off
-  javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),  
   scalacOptions ++= Seq(
     "-deprecation",                      // Emit warning and location for usages of deprecated APIs.
     "-encoding", "utf-8",                // Specify character encoding used by source files.
-    "-explaintypes",                     // Explain type errors in more detail.
     "-feature",                          // Emit warning and location for usages of features that should be imported explicitly.  "-encoding", "UTF-8",
-    "-language:_",
-    "-target:jvm-1.8",
     "-unchecked",                        // Enable additional warnings where generated code depends on assumptions.
-    "-Xlint",
-    "-Yrangepos",
-    "-Ywarn-dead-code",                  // Warn when dead code is identified.
-    "-Xfatal-warnings",
-    "-Ywarn-extra-implicit",             // Warn when more than one implicit parameter section is defined.
   )
   // format: on
 )

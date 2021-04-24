@@ -5,6 +5,9 @@
     "previous": "Previous",
     "tagline": "WESO Utils",
     "docs": {
+      "overview": {
+        "title": "Overview"
+      },
       "readme": {
         "title": "readme"
       }

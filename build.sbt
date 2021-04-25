@@ -43,14 +43,19 @@ lazy val utilsRoot = project
     publish / skip := true,
     ThisBuild / githubWorkflowBuild := Seq(
      WorkflowStep.Sbt(
-      List("clean", "coverage", "test", "coverageReport", "scalafmtCheckAll"),
+      List("clean", 
+       // "coverage", 
+        "test", 
+       // "coverageReport", 
+        "scalafmtCheckAll"
+        ),
       id = None,
       name = Some("Test")
      ),
-    WorkflowStep.Use(
+   /* WorkflowStep.Use(
      UseRef.Public("codecov", "codecov-action", "e156083f13aff6830c92fc5faa23505779fbf649"), // v1.2.1
      name = Some("Upload code coverage")
-    )
+    ) */
    )    
   )
 
@@ -232,7 +237,7 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
   ), 
-  coverageHighlighting := true,
+  // coverageHighlighting := true,
   githubOwner := "weso", 
   githubRepository := "utils"
 )

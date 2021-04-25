@@ -1,12 +1,7 @@
 const React = require("react");
 
 const CompLibrary = require("../../core/CompLibrary.js");
-
-const variables = require(process.cwd() + "/variables.js");
-
 const MarkdownBlock = CompLibrary.MarkdownBlock;
-const Container = CompLibrary.Container;
-const GridBlock = CompLibrary.GridBlock;
 
 class HomeSplash extends React.Component {
   render() {
@@ -68,34 +63,8 @@ class HomeSplash extends React.Component {
 class Index extends React.Component {
   render() {
     const { config: siteConfig, language = "" } = this.props;
-    const { baseUrl } = siteConfig;
 
-    const {
-      organization,
-      coreModuleName,
-      latestVersion,
-      scalaPublishVersions
-    } = variables; 
-
-    const latestVersionBadge = latestVersion
-      .replace("-", "--")
-      .replace("_", "__");
-
-    const Block = props => (
-      <Container
-        padding={["bottom", "top"]}
-        id={props.id}
-        background={props.background}
-      >
-        <GridBlock
-          align="center"
-          contents={props.children}
-          layout={props.layout}
-        />
-      </Container>
-    );
-
-    const index = `# Utils at index.js`.trim();
+    const index = ``.trim();
 
     return (
       <div>

@@ -9,7 +9,10 @@
         "title": "Overview"
       },
       "readme": {
-        "title": "readme"
+        "title": "Readme"
+      },
+      "utils": {
+        "title": "Utils module"
       }
     },
     "links": {

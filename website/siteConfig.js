@@ -20,16 +20,16 @@ const siteConfig = {
     { href: repoUrl, label: "GitHub" }
   ],
 
-  headerIcon: "img/fs2-kafka.white.svg",
-  titleIcon: "img/fs2-kafka.svg",
-  favicon: "img/favicon.png",
+  headerIcon: "img/logo-weso.png",
+  titleIcon: "img/logo-weso.png",
+  favicon: "img/favicon/favicon.ico",
 
   colors: {
     primaryColor: "#122932",
     secondaryColor: "#153243"
   },
 
-  copyright: `Copyright © 2021-${new Date().getFullYear()} WESO Research group.`,
+  copyright: `Copyright © 2019-${new Date().getFullYear()} WESO Research group.`,
 
   highlight: { theme: "github" },
 

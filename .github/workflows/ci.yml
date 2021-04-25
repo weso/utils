@@ -58,7 +58,7 @@ jobs:
         uses: codecov/codecov-action@e156083f13aff6830c92fc5faa23505779fbf649
 
       - name: Compress target directories
-        run: tar cf targets.tar modules/validating/target modules/utils/target modules/utilsTest/target target modules/testsuite/target modules/typing/target project/target
+        run: tar cf targets.tar modules/validating/target modules/utils/target modules/utilsTest/target target utils-docs/target modules/testsuite/target modules/typing/target project/target
 
       - name: Upload target directories
         uses: actions/upload-artifact@v2

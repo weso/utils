@@ -52,10 +52,7 @@ jobs:
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
 
       - name: Test
-        run: sbt ++${{ matrix.scala }} clean coverage test coverageReport scalafmtCheckAll
-
-      - name: Upload code coverage
-        uses: codecov/codecov-action@e156083f13aff6830c92fc5faa23505779fbf649
+        run: sbt ++${{ matrix.scala }} clean test scalafmtCheckAll
 
       - name: Compress target directories
         run: tar cf targets.tar modules/validating/target modules/utils/target modules/utilsTest/target target utils-docs/target modules/testsuite/target modules/typing/target project/target

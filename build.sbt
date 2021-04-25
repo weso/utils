@@ -2,8 +2,8 @@ lazy val scala212 = "2.12.13"
 lazy val scala213 = "2.13.5"
 lazy val scala3   = "3.0.0-RC2"
 lazy val supportedScalaVersions = List(
-  scala212, 
   scala213, 
+  scala212, 
   scala3
  )
 
@@ -36,7 +36,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
 lazy val utilsRoot = project
   .in(file("."))
   .settings(commonSettings, publishSettings)
-  .aggregate(typing, validating, utilsTest, utils, testsuite)
+  .aggregate(typing, validating, utilsTest, utils, testsuite, docs)
   .settings(
     ThisBuild / turbo := true,
     crossScalaVersions := Nil,
@@ -129,6 +129,7 @@ lazy val utils = project
       catsCore,
       catsKernel,
       catsEffect,
+      fs2,fs2io,
       fs2,fs2io,
       pprint,
     ),

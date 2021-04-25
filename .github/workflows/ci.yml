@@ -52,7 +52,7 @@ jobs:
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
 
       - name: Test
-        run: sbt ++${{ matrix.scala }} clean test scalafmtCheckAll
+        run: sbt ++${{ matrix.scala }} clean test
 
       - name: Compress target directories
         run: tar cf targets.tar modules/validating/target modules/utils/target modules/utilsTest/target target utils-docs/target modules/testsuite/target modules/typing/target project/target

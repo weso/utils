@@ -4,6 +4,7 @@ import data._
 import cats.implicits._
 import cats.effect.IO
 import es.weso.utils.internal.CollectionCompat._
+import scala.language.higherKinds
 
 abstract class CheckerCats extends Checker {
   implicit val logMonoid: Monoid[Log]
@@ -37,14 +38,15 @@ abstract class CheckerCats extends Checker {
 
   def fromEither[A](e: Either[Err,A]): Check[A] = EitherT.fromEither[WriterEC](e)
 
-  def fromIO[A](io: IO[A]): Check[A] = EitherT.liftF(WriterT.liftF(Kleisli.liftF(Kleisli.liftF(io))))
+  def fromIO[A](io: IO[A]): Check[A] = 
+   EitherT.liftF[WriterEC, Err, A](
+     WriterT.liftF[ReaderEC, Log, A](
+       Kleisli.liftF[ReaderConfig, Env, A](
+         Kleisli.liftF[IO,Config,A](io))))
 
   def fromEitherIO[A](e: EitherT[IO,Err,A]): Check[A] = {
-    val ea: Check[Either[Err,A]] = EitherT.liftF(WriterT.liftF(ReaderT.liftF(ReaderT.liftF(e.value))))
-    for {
-      either <- ea
-      r <- either.fold(err(_), ok)
-    } yield r
+    // val ea: Check[Either[Err,A]] = 
+    fromIO(e.value).flatMap(_.fold(err[A](_), ok))      
   }
     
 

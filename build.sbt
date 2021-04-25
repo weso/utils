@@ -39,8 +39,6 @@ lazy val utilsRoot = project
   .aggregate(typing, validating, utilsTest, utils, testsuite)
   .settings(
     ThisBuild / turbo := true,
-    cancelable in Global      := true,
-    fork                      := true,
     crossScalaVersions := Nil,
     publish / skip := true,
     ThisBuild / githubWorkflowBuild := Seq(
@@ -138,11 +136,10 @@ lazy val docs = project
     mdocSettings,
     ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(noDocProjects: _*)
    )
-  .dependsOn(utils)
+  .dependsOn(typing, validating, utilsTest, utils, testsuite)
   .enablePlugins(MdocPlugin, DocusaurusPlugin, ScalaUnidocPlugin)
 
 lazy val mdocSettings = Seq(
-//  mdoc := (Compile / run).evaluated,
   mdocVariables := Map(
     "VERSION" -> version.value
   ),
@@ -156,14 +153,12 @@ lazy val mdocSettings = Seq(
     docusaurusPublishGhpages
       .dependsOn(Compile / unidoc)
       .value,
-  // format: off
   ScalaUnidoc / unidoc / scalacOptions ++= Seq(
     "-doc-source-url", s"https://github.com/weso/utils/tree/v${(ThisBuild / version).value}€{FILE_PATH}.scala",
     "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath,
     "-doc-title", "Utils",
     "-doc-version", s"v${(ThisBuild / version).value}"
   )
-  // format: on
 )
 
 

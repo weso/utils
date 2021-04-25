@@ -47,7 +47,7 @@ lazy val utilsRoot = project
        // "coverage", 
         "test", 
        // "coverageReport", 
-        "scalafmtCheckAll"
+       // "scalafmtCheckAll"
         ),
       id = None,
       name = Some("Test")

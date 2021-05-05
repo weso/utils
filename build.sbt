@@ -4,7 +4,7 @@ lazy val scala3   = "3.0.0-RC2"
 lazy val supportedScalaVersions = List(
   scala213, 
   scala212, 
-  scala3
+//  scala3
  )
 
 // Dependency versions
@@ -176,11 +176,7 @@ lazy val noDocProjects = Seq[ProjectReference](
   validating
 )
 
-lazy val noPublishSettings = Seq(
-//  publish := (),
-//  publishLocal := (),
-  publishArtifact := false
-)
+lazy val noPublishSettings = publish / skip := true
 
 lazy val sharedDependencies = Seq(
   libraryDependencies ++= Seq(

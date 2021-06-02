@@ -35,7 +35,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
 
 lazy val utilsRoot = project
   .in(file("."))
-  .settings(commonSettings, publishSettings)
+  .settings(commonSettings)
   .aggregate(typing, validating, utilsTest, utils, testsuite, docs)
   .settings(
     ThisBuild / turbo := true,
@@ -62,7 +62,7 @@ lazy val utilsRoot = project
 lazy val typing = project
   .in(file("modules/typing"))
   .dependsOn(utils)
-  .settings(commonSettings, publishSettings)
+  .settings(commonSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
@@ -75,7 +75,7 @@ lazy val typing = project
 lazy val testsuite = project
   .in(file("modules/testsuite"))
   .dependsOn(utils)
-  .settings(commonSettings, publishSettings)
+  .settings(commonSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
@@ -88,7 +88,7 @@ lazy val testsuite = project
 
 lazy val utilsTest = project
   .in(file("modules/utilsTest"))
-  .settings(commonSettings, publishSettings)
+  .settings(commonSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
@@ -108,7 +108,7 @@ lazy val utilsTest = project
   lazy val validating = project
   .in(file("modules/validating"))
   .dependsOn(utils % "test -> test; compile -> compile")
-  .settings(commonSettings, publishSettings)
+  .settings(commonSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
@@ -119,7 +119,7 @@ lazy val utilsTest = project
 
 lazy val utils = project
   .in(file("modules/utils"))
-  .settings(commonSettings, publishSettings)
+  .settings(commonSettings)
   .settings(
     crossScalaVersions := supportedScalaVersions,
      libraryDependencies ++= Seq(
@@ -229,14 +229,15 @@ lazy val compilationSettings = Seq(
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   organization := "es.weso",
-  resolvers ++= Seq(
-    Resolver.githubPackages("weso"),
-    Resolver.sonatypeRepo("releases"),
-    Resolver.sonatypeRepo("snapshots")
-  ),
+  //resolvers ++= Seq(
+    //Resolver.githubPackages("weso"),
+    //Resolver.sonatypeRepo("releases"),
+    //Resolver.sonatypeRepo("snapshots")
+  //)
+  //,
   // coverageHighlighting := true,
-  githubOwner := "weso",
-  githubRepository := "utils"
+  // githubOwner := "weso",
+  // githubRepository := "utils"
 )
 
 sonatypeProfileName := ("es.weso")

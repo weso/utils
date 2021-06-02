@@ -228,40 +228,23 @@ lazy val compilationSettings = Seq(
 ) */
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
-  organization := "es.weso",
-  //resolvers ++= Seq(
-    //Resolver.githubPackages("weso"),
-    //Resolver.sonatypeRepo("releases"),
-    //Resolver.sonatypeRepo("snapshots")
-  //)
-  //,
-  // coverageHighlighting := true,
-  // githubOwner := "weso",
-  // githubRepository := "utils"
+  sonatypeProfileName := ("es.weso"),
+  publishMavenStyle   := true,
+  homepage            := Some(url("https://github.com/weso/utils")),
+  licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
+  scmInfo             := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
+  autoAPIMappings     := true,
+  apiURL              := Some(url("http://weso.github.io/utils/latest/api/")),
+  autoAPIMappings     := true,
+  developers := List(
+    Developer(
+      id="labra",
+      name="Jose Emilio Labra Gayo",
+      email="jelabra@gmail.com",
+      url=url("https://weso.labra.es")
+    ))
 )
 
-sonatypeProfileName := ("es.weso")
-publishMavenStyle   := true
-homepage        := Some(url("https://github.com/weso/utils"))
-licenses        := Seq("MIT" -> url("http://opensource.org/licenses/MIT"))
-scmInfo         := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git"))
-autoAPIMappings := true
-apiURL          := Some(url("http://weso.github.io/utils/latest/api/"))
-autoAPIMappings     := true
-
-developers := List(
-  Developer(
-    id="labra",
-    name="Jose Emilio Labra Gayo",
-    email="",
-    url=url("https://weso.labra.es")
-  ),
-  Developer(
-    id="markiantorno",
-    name="Mark Iantorno",
-    email="markiantorno@gmail.com",
-    url=url("https://hl7.github.org")
-  ))
 publishTo in ThisBuild := {
   val nexus = "https://oss.sonatype.org/"
   if (isSnapshot.value)

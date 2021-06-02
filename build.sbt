@@ -2,8 +2,8 @@ lazy val scala212 = "2.12.13"
 lazy val scala213 = "2.13.5"
 lazy val scala3   = "3.0.0-RC2"
 lazy val supportedScalaVersions = List(
-  scala213, 
-  scala212, 
+  scala213,
+  scala212,
 //  scala3
  )
 
@@ -23,9 +23,9 @@ lazy val circeGeneric      = "io.circe"                   %% "circe-generic"    
 lazy val circeParser       = "io.circe"                   %% "circe-parser"        % circeVersion
 lazy val fs2               = "co.fs2"                     %% "fs2-core"            % fs2Version
 lazy val fs2io             = "co.fs2"                     %% "fs2-io"              % fs2Version
-lazy val munit             = "org.scalameta"              %% "munit"               % munitVersion 
+lazy val munit             = "org.scalameta"              %% "munit"               % munitVersion
 lazy val munitEffects      = "org.typelevel"              %% "munit-cats-effect-3" % munitEffectVersion
-lazy val pprint            = "com.lihaoyi"                %% "pprint"              % pprintVersion             
+lazy val pprint            = "com.lihaoyi"                %% "pprint"              % pprintVersion
 
 def priorTo2_13(scalaVersion: String): Boolean =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -43,10 +43,10 @@ lazy val utilsRoot = project
     publish / skip := true,
     ThisBuild / githubWorkflowBuild := Seq(
      WorkflowStep.Sbt(
-      List("clean", 
-       // "coverage", 
-        "test", 
-       // "coverageReport", 
+      List("clean",
+       // "coverage",
+        "test",
+       // "coverageReport",
        // "scalafmtCheckAll"
         ),
       id = None,
@@ -56,7 +56,7 @@ lazy val utilsRoot = project
      UseRef.Public("codecov", "codecov-action", "e156083f13aff6830c92fc5faa23505779fbf649"), // v1.2.1
      name = Some("Upload code coverage")
     ) */
-   )    
+   )
   )
 
 lazy val typing = project
@@ -83,8 +83,8 @@ lazy val testsuite = project
     catsKernel,
     catsEffect,
     pprint,
-    ), 
-  )  
+    ),
+  )
 
 lazy val utilsTest = project
   .in(file("modules/utilsTest"))
@@ -135,8 +135,8 @@ lazy val utils = project
     ),
   )
 
-lazy val docs = project   
-  .in(file("utils-docs")) 
+lazy val docs = project
+  .in(file("utils-docs"))
   .settings(
     noPublishSettings,
     mdocSettings,
@@ -233,24 +233,38 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
     Resolver.githubPackages("weso"),
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
-  ), 
+  ),
   // coverageHighlighting := true,
-  githubOwner := "weso", 
+  githubOwner := "weso",
   githubRepository := "utils"
 )
 
-lazy val publishSettings = Seq(
-  homepage        := Some(url("https://github.com/weso/utils")),
-  licenses        := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
-  scmInfo         := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
-  autoAPIMappings := true,
-  apiURL          := Some(url("http://weso.github.io/utils/latest/api/")),
-  pomExtra        := <developers>
-                       <developer>
-                         <id>labra</id>
-                         <name>Jose Emilio Labra Gayo</name>
-                         <url>https://weso.labra.es</url>
-                       </developer>
-                     </developers>,
-  publishMavenStyle              := true,
-)
+sonatypeProfileName := ("es.weso")
+publishMavenStyle   := true
+homepage        := Some(url("https://github.com/weso/utils"))
+licenses        := Seq("MIT" -> url("http://opensource.org/licenses/MIT"))
+scmInfo         := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git"))
+autoAPIMappings := true
+apiURL          := Some(url("http://weso.github.io/utils/latest/api/"))
+autoAPIMappings     := true
+
+developers := List(
+  Developer(
+    id="labra",
+    name="Jose Emilio Labra Gayo",
+    email="",
+    url=url("https://weso.labra.es")
+  ),
+  Developer(
+    id="markiantorno",
+    name="Mark Iantorno",
+    email="markiantorno@gmail.com",
+    url=url("https://hl7.github.org")
+  ))
+publishTo in ThisBuild := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}

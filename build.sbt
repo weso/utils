@@ -172,7 +172,7 @@ lazy val mdocSettings = Seq(
 )
 
 lazy val ghPagesSettings = Seq(
-  git.remoteRepo := "git@github.com:weso/document.git"
+  git.remoteRepo := "git@github.com:weso/utils.git"
 )
 
 /* ********************************************************

@@ -33,7 +33,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val Java11 = "adopt@1.11"  
+val Java11 = "adopt@1.11"
 
 ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
 
@@ -231,8 +231,10 @@ lazy val compilationSettings = Seq(
 // wixProductUpgradeId := "4552fb0e-e257-4dbd-9ecb-dba9dbacf424"
 ) */
 
+
+
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
-  organization := "es.weso",
+ /*organization := "es.weso",
   sonatypeProfileName := ("es.weso"),
   publishMavenStyle   := true,
   homepage            := Some(url("https://github.com/weso/utils")),
@@ -254,5 +256,19 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
       Some("snapshots" at nexus + "content/repositories/snapshots")
     else
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-  }
+  }*/
 )
+
+inThisBuild(List(
+   organization        := "es.weso",
+   homepage            := Some(url("https://github.com/weso/utils")),
+   licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
+   developers := List(
+     Developer(
+       id="labra",
+       name="Jose Emilio Labra Gayo",
+       email="jelabra@gmail.com",
+       url=url("https://weso.labra.es")
+     )
+   )
+))

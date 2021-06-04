@@ -33,6 +33,10 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
+val Java11 = "adopt@1.11"  
+
+ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
+
 lazy val utilsRoot = project
   .in(file("."))
   .settings(commonSettings)

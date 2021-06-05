@@ -226,16 +226,6 @@ lazy val compilationSettings = Seq(
   // format: on
 )
 
-/* lazy val wixSettings = Seq(
-  wixProductId        := "39b564d5-d381-4282-ada9-87244c76e14b",
-  wixProductUpgradeId := "6a710435-9af4-4adb-a597-98d3dd0bade1"
-// The same numbers as in the docs?
-// wixProductId := "ce07be71-510d-414a-92d4-dff47631848a",
-// wixProductUpgradeId := "4552fb0e-e257-4dbd-9ecb-dba9dbacf424"
-) */
-
-
-
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   organization := "es.weso",
   sonatypeProfileName := ("es.weso"),
@@ -253,17 +243,3 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
       url=url("https://weso.labra.es")
     ))
 )
-
-/*inThisBuild(List(
-   organization        := "es.weso",
-   homepage            := Some(url("https://github.com/weso/utils")),
-   licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
-   developers := List(
-     Developer(
-       id="labra",
-       name="Jose Emilio Labra Gayo",
-       email="jelabra@gmail.com",
-       url=url("https://weso.labra.es")
-     )
-   )
-))*/

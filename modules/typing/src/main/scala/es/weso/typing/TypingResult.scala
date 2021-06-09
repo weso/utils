@@ -36,7 +36,7 @@ case class TypingResult[Err, Evidence](
 
 object TypingResult {
 
-  implicit def monoidTypingResult[Err, Evidence] = new Monoid[TypingResult[Err, Evidence]] {
+  implicit def monoidTypingResult[Err, Evidence]: Monoid[TypingResult[Err,Evidence]] = new Monoid[TypingResult[Err, Evidence]] {
     override def empty: TypingResult[Err, Evidence] = {
       val e: List[Evidence] = List()
       TypingResult(Validated.valid(e))
@@ -49,7 +49,7 @@ object TypingResult {
     }
   }
 
-  implicit def showTypingResult[Err: Show, Evidence: Show] =
+  implicit def showTypingResult[Err: Show, Evidence: Show]: Show[TypingResult[Err,Evidence]] =
     new Show[TypingResult[Err, Evidence]] {
       override def show(r: TypingResult[Err, Evidence]): String =
         r.t.fold(

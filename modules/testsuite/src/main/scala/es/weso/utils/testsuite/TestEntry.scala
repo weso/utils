@@ -4,11 +4,14 @@ import cats.implicits._
 import cats.effect._
 
 case class TestEntry(id: TestId, action: IO[TestResult]) {
- 
+
+ def info(msg: String, config: TestConfig): IO[Unit] = 
+  if (config.verbose) IO.println(msg)
+  else IO.pure(())
+
  def runEntry(r: Ref[IO,Stats], config: TestConfig): IO[TestResult] = 
   for {
-    _ <- if (config.verbose) 
-     IO.println(s"<<Running ${id.show}") else IO.pure(())
+    _ <- info(s"<<Running ${id.show}", config)
     pair <- Clock[IO].timed(
       GenTemporal[IO].timeoutTo(
         action, config.maxTimePerTest, 
@@ -20,12 +23,12 @@ case class TestEntry(id: TestId, action: IO[TestResult]) {
         e => {
           val res = FailedResult(id, exception = Some(e))
           r.getAndUpdate(_.addResult(this,res)) *> 
-          IO.println(s">>Result failed for ${id.show}: ${res.show}") *>
+          info(s">>Result failed for ${id.show}: ${res.show}", config) *>
           IO.pure(res)
         }, 
         res => { 
          r.getAndUpdate(_.addResult(this,res)) *> 
-         IO.println(s">>Result ${if (res.passed) "passed" else "failed"} for ${id.show}: ${res.show}") *>
+         info(s">>Result ${if (res.passed) "passed" else "failed"} for ${id.show}: ${res.show}", config) *>
          IO.pure(res)
         }
     ) 

@@ -79,7 +79,7 @@ object Typing {
     ts.foldLeft(zero)(_.combineTyping(_))
   }
 
-  implicit def showTyping[Key: Show, Value: Show, Err: Show, Evidence: Show] = new Show[Typing[Key, Value, Err, Evidence]] {
+  implicit def showTyping[Key: Show, Value: Show, Err: Show, Evidence: Show]: Show[Typing[Key,Value,Err,Evidence]] = new Show[Typing[Key, Value, Err, Evidence]] {
 
     import TypingResult.showTypingResult
 

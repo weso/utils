@@ -1,7 +1,0 @@
-= Utils library
-
-Utils contains a list of utils used by several Scala projects at WESO
-
-== ScalaDoc
-
-link:api/latest/es/weso/utils/index.html[ScalaDoc]

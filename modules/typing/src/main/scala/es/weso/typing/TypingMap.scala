@@ -52,6 +52,7 @@ case class TypingMap[Key, Value, Err, Evidence](
   def firstNotEvidence(e: Err): TypingResult[Err, Evidence] = {
     TypingResult(Validated.invalid(NonEmptyList.of(e)))
   }
+
   override def addEvidences(key: Key, value: Value,
     es: List[Evidence]): Typing[Key, Value, Err, Evidence] = {
     val newTyping: immutable.Map[Key, immutable.Map[Value, TypingResult[Err, Evidence]]] = 
@@ -97,7 +98,7 @@ case class TypingMap[Key, Value, Err, Evidence](
     t match {
       case tm: TypingMap[Key, Value, Err, Evidence] => {
         val r: immutable.Map[Key, immutable.Map[Value, TypingResult[Err, Evidence]]] =
-          m combine tm.m
+          m.combine(tm.m)
         TypingMap(r)
       }
 
@@ -122,11 +123,11 @@ case class TypingMap[Key, Value, Err, Evidence](
     TypingMap(updWith(m)(key)(mappingFn))
   }
 
- def rmValues(cond: Value => Boolean)(m: immutable.Map[Value, TypingResult[Err,Evidence]]): immutable.Map[Value,TypingResult[Err,Evidence]] = {
-   filterKs(m)(v => !cond(v))
- }
+  def rmValues(cond: Value => Boolean)(m: immutable.Map[Value, TypingResult[Err,Evidence]]): immutable.Map[Value,TypingResult[Err,Evidence]] = {
+    filterKs(m)(v => !cond(v))
+  }
 
- override def removeValuesWith(cond: Value => Boolean): Typing[Key,Value,Err,Evidence] = {
+  override def removeValuesWith(cond: Value => Boolean): Typing[Key,Value,Err,Evidence] = {
    val zero: immutable.Map[Key, immutable.Map[Value, TypingResult[Err, Evidence]]] = immutable.Map()
    def cmb(current: immutable.Map[Key, immutable.Map[Value, TypingResult[Err, Evidence]]], 
            key:Key
@@ -138,7 +139,7 @@ case class TypingMap[Key, Value, Err, Evidence](
      current + (key -> newM)
    }
    TypingMap(m.keys.foldLeft(zero)(cmb))
- }
+  }
 
   def negateValues(cond: Value => Boolean, err: Err)(m: immutable.Map[Value, TypingResult[Err,Evidence]]): immutable.Map[Value,TypingResult[Err,Evidence]] = {
    val zero: immutable.Map[Value, TypingResult[Err, Evidence]] = immutable.Map() 

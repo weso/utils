@@ -1,20 +1,20 @@
 lazy val scala212 = "2.12.13"
-lazy val scala213 = "2.13.6"
-lazy val scala3   = "3.0.0-RC2"
+lazy val scala213 = "2.13.5"
+lazy val scala3   = "3.0.0"
 lazy val supportedScalaVersions = List(
   scala213,
   scala212,
-//  scala3
+  scala3
  )
 
 // Dependency versions
-lazy val catsVersion             = "2.5.0"
-lazy val catsEffectVersion       = "3.0.1"
-lazy val circeVersion            = "0.14.0-M5"
-lazy val fs2Version              = "3.0.1"
-lazy val munitVersion            = "0.7.23"
-lazy val munitEffectVersion      = "1.0.1"
-lazy val pprintVersion           = "0.6.4"
+lazy val catsVersion             = "2.6.1"
+lazy val catsEffectVersion       = "3.1.1"
+lazy val circeVersion            = "0.14.1"
+lazy val fs2Version              = "3.0.4"
+lazy val munitVersion            = "0.7.26"
+lazy val munitEffectVersion      = "1.0.3"
+lazy val pprintVersion           = "0.6.6"
 lazy val catsCore          = "org.typelevel"              %% "cats-core"           % catsVersion
 lazy val catsKernel        = "org.typelevel"              %% "cats-kernel"         % catsVersion
 lazy val catsEffect        = "org.typelevel"              %% "cats-effect"         % catsEffectVersion
@@ -226,16 +226,6 @@ lazy val compilationSettings = Seq(
   // format: on
 )
 
-/* lazy val wixSettings = Seq(
-  wixProductId        := "39b564d5-d381-4282-ada9-87244c76e14b",
-  wixProductUpgradeId := "6a710435-9af4-4adb-a597-98d3dd0bade1"
-// The same numbers as in the docs?
-// wixProductId := "ce07be71-510d-414a-92d4-dff47631848a",
-// wixProductUpgradeId := "4552fb0e-e257-4dbd-9ecb-dba9dbacf424"
-) */
-
-
-
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   organization := "es.weso",
   sonatypeProfileName := ("es.weso"),
@@ -253,17 +243,3 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
       url=url("https://weso.labra.es")
     ))
 )
-
-/*inThisBuild(List(
-   organization        := "es.weso",
-   homepage            := Some(url("https://github.com/weso/utils")),
-   licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
-   developers := List(
-     Developer(
-       id="labra",
-       name="Jose Emilio Labra Gayo",
-       email="jelabra@gmail.com",
-       url=url("https://weso.labra.es")
-     )
-   )
-))*/

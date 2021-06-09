@@ -1,7 +1,6 @@
 package es.weso.utils
 import java.io._
 import java.nio.file.Paths
-// import cats.data.EitherT
 import cats.effect._
 import scala.io._
 import java.nio.file.Path
@@ -9,8 +8,7 @@ import fs2._
 import fs2.io.file.Files
 import java.nio.file.NoSuchFileException
 import scala.util.control.NoStackTrace
-
-// import util._
+import cats.implicits._
 
 object FileUtils {
 
@@ -61,13 +59,13 @@ object FileUtils {
    * Ensures to close a file.
    * Follows the [[https://wiki.scala-lang.org/display/SYGN/Loan Loan pattern]]
    */
-  def using[A <: { def close(): Unit }, B](resource: A)(f: A => B): B = {
+  /* def using[A <: { def close(): Unit }, B](resource: A)(f: A => B): B = {
     try {
       f(resource)
     } finally {
       resource.close()
     }
-  }
+  } */
 
 
   /**
@@ -123,11 +121,8 @@ object FileUtils {
 
   def getStream(fileName: String): Either[String, InputStreamReader] = {
     try {
-      using(Source.fromFile(fileName)("UTF-8")) { source =>
-        {
-          Right(source.reader())
-        }
-      }
+      val source = Source.fromFile(fileName)("UTF-8") 
+      source.reader().asRight
     } catch {
       case e: FileNotFoundException =>
         Left(s"Error reading file ${fileName}: ${e.getMessage}")
@@ -137,6 +132,7 @@ object FileUtils {
         Left(s"Exception reading file ${fileName}: ${e.getMessage}")
     }
   }
+
   /**
    * Write contents to a file
    *

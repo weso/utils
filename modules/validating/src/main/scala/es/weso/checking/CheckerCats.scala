@@ -380,7 +380,7 @@ object CheckerCatsStr extends CheckerCats {
   }
 
   // I need to add the following line so Check can act as a Monad...
-  implicit val monadWriter = mWriterEC
+  implicit val monadWriter: Monad[WriterEC] = mWriterEC
 
   def c0: Config = Map[String, String]()
   def e0: Env = Map[String, Int]()

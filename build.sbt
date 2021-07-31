@@ -9,7 +9,7 @@ lazy val supportedScalaVersions = List(
 
 // Dependency versions
 lazy val catsVersion             = "2.6.1"
-lazy val catsEffectVersion       = "3.1.1"
+lazy val catsEffectVersion       = "3.2.1"
 lazy val circeVersion            = "0.14.1"
 lazy val fs2Version              = "3.0.4"
 lazy val munitVersion            = "0.7.26"

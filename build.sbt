@@ -33,9 +33,10 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
+val Java8 = "adopt@1.8"
 val Java11 = "adopt@1.11"
 
-ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
+ThisBuild / githubWorkflowJavaVersions := Seq(Java8)
 
 lazy val utilsRoot = project
   .in(file("."))
@@ -240,6 +241,6 @@ lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
       id="labra",
       name="Jose Emilio Labra Gayo",
       email="jelabra@gmail.com",
-      url=url("https://weso.labra.es")
+      url=url("https://labra.weso.es")
     ))
 )

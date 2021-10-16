@@ -1,7 +1,6 @@
 package es.weso.utils
 
 import java.util.regex.Pattern
-// import com.sun.org.apache.xerces.internal.impl.xpath.regex._
 
 case class RegEx(pattern: String, maybeFlags: Option[String]) {
   val cleanPattern = cleanBackslashes(pattern)

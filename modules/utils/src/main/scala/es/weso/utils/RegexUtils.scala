@@ -1,5 +1,7 @@
 package es.weso.utils
-import com.sun.org.apache.xerces.internal.impl.xpath.regex._
+
+import java.util.regex.Pattern
+// import com.sun.org.apache.xerces.internal.impl.xpath.regex._
 
 case class RegEx(pattern: String, maybeFlags: Option[String]) {
   val cleanPattern = cleanBackslashes(pattern)
@@ -9,14 +11,28 @@ case class RegEx(pattern: String, maybeFlags: Option[String]) {
     str.replace("\\\\d", "\\d")
   }
 
+  def intFlags(flags: String): Int = {
+    flags.foldLeft(0)((flagAcc,c) => c match {
+      case 'i' => flagAcc | Pattern.CASE_INSENSITIVE
+      case 'd' => flagAcc | Pattern.UNIX_LINES
+      case 'm' => flagAcc | Pattern.MULTILINE
+      case 's' => flagAcc | Pattern.DOTALL
+      case 'u' => flagAcc | Pattern.UNICODE_CASE
+      case 'x' => flagAcc | Pattern.COMMENTS
+      case 'U' => flagAcc | Pattern.UNICODE_CHARACTER_CLASS
+    })
+  }
+
   def matches(str: String): Either[String, Boolean] = {
     // println(s"Pattern: $pattern\ncleanPattern: $cleanPattern")
     // println(s"str: $str")
     // println(s"re: $cleanPattern: chars: ${cleanPattern.map(c => c.toInt).mkString(",")}")
     try {
-      val regex = new RegularExpression(cleanPattern, maybeFlags.getOrElse(""))
-      // println(s"Regex: ${regex} matches: ${regex.matches(str)}")
-      Right(regex.matches(str))
+      val pattern = maybeFlags match {
+        case Some(value) => Pattern.compile(cleanPattern, intFlags(value))
+        case None => Pattern.compile(cleanPattern)
+      }
+      Right(pattern.matcher(str).matches())
     } catch {
       case e: Exception =>
         Left(s"Error: $e, matching $str with /$cleanPattern/${maybeFlags.getOrElse("")}")

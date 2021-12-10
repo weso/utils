@@ -3,9 +3,14 @@ package es.weso.utils
 import munit._ 
 
 class RegexUtilsTest extends FunSuite {
-  shouldMatch("\\d{2}", None, "34") // Match
+  shouldMatch("[a-z]", Some("i"), "A") // Case insensitive
   shouldNotMatch("[a-z]", None, "A") // Do not match
-  ErrorWhileMatch("\\[a-z]", None, "A") // Error while processing regex
+  shouldMatch("[a-z].[a-z]", Some("s"), "a\nb") // Dot matches a newline
+  shouldNotMatch("[a-z].[a-z]", None, "a\nb") // Dot matches a newline
+  shouldMatch("[a-z].[a-z]", Some("si"), "A\nB") // Multiple patterns
+  shouldMatch("[a-z].[a-z]", Some("isi"), "A\nB") // Duplicate flags
+  shouldMatch("\\d{2}", None, "34") // Match
+  shouldNotMatch("\\[a-z]", None, "A") // Error while processing regex
 
 
   def shouldMatch(regex: String, flags: Option[String], str: String): Unit = {

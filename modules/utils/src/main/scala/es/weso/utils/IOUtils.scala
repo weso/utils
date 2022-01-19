@@ -58,7 +58,7 @@ object IOUtils {
      either <- EitherT.liftF(io.attempt)
      resp <- either.fold(
        e => { 
-         pprint.log(e)
+         // pprint.log(e)
          fail_es(s"Error: ${e.getMessage}")
       }, 
       ok_es(_)

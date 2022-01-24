@@ -9,11 +9,14 @@ class RegexUtilsTest extends FunSuite {
   shouldNotMatch("[a-z].[a-z]", None, "a\nb") // Dot matches a newline
   shouldMatch("[a-z].[a-z]", Some("si"), "A\nB") // Multiple patterns
   shouldMatch("[a-z].[a-z]", Some("isi"), "A\nB") // Duplicate flags
-  shouldMatch("\\d{2}", None, "34") // Match
-  shouldNotMatch("\\[a-z]", None, "A") // Error while processing regex
+  shouldMatch("\\d{2}", None, "34") // Match 
+  shouldMatch("bc", None, "abc")
+  shouldNotMatch("bd", None, "abcd")
+  shouldNotMatch("bd", None, "abc")
+  shouldNotMatch("\\[a-z]", None, "A") // Error while processing regex 
 
 
-  def shouldMatch(regex: String, flags: Option[String], str: String): Unit = {
+  def shouldMatch(regex: String, flags: Option[String], str: String)(implicit loc: munit.Location): Unit = {
     test(s"should match /$regex/${flags.getOrElse("")} with $str") {
       RegEx(regex, flags).matches(str) match {
         case Right(true) => () // info(s"$str matches /$regex/${flags.getOrElse("")}")
@@ -22,7 +25,7 @@ class RegexUtilsTest extends FunSuite {
     }
   }
 
-  def shouldNotMatch(regex: String, flags: Option[String], str: String): Unit = {
+  def shouldNotMatch(regex: String, flags: Option[String], str: String)(implicit loc: munit.Location): Unit = {
     test(s"should not match /$regex/${flags.getOrElse("")} with $str") {
       RegEx(regex, flags).matches(str) match {
         case Right(false) => () // info(s"$str doesn't match /$regex/${flags.getOrElse("")}")

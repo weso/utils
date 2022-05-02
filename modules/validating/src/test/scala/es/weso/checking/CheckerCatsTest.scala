@@ -5,48 +5,46 @@ import es.weso.utils.internal.CollectionCompat._
 import cats.effect.IO
 import munit._
 
-
 class CheckerCatsTest extends CatsEffectSuite {
 
   import CheckerCatsStr._
 
-  def runValue_(c:Check[Int]): IO[Either[Err,Int]] = runValue(c)(c0)(e0)
-  def runLog_(c:Check[Int]): IO[Log] = runLog(c)(c0)(e0)
-  def runValueFlag(c:Check[(Int,Boolean)]): IO[Either[Err,(Int,Boolean)]] = runValue(c)(c0)(e0)
+  def runValue_(c: Check[Int]): IO[Either[Err, Int]]                          = runValue(c)(c0)(e0)
+  def runLog_(c: Check[Int]): IO[Log]                                         = runLog(c)(c0)(e0)
+  def runValueFlag(c: Check[(Int, Boolean)]): IO[Either[Err, (Int, Boolean)]] = runValue(c)(c0)(e0)
 
+  test("Should be able to return a value") {
+    val c: Check[Int] = ok(2)
+    assertIO(runValue_(c), Right(2))
+  }
 
-    test("Should be able to return a value") {
-        val c: Check[Int] = ok(2)
-        assertIO(runValue_(c), Right(2))
-    }
-    
-    test("Should be able to return an error") {
-        val msg = "Error"
-        val e: Check[Int] = err(msg)
-        assertIO(runValue_(e), Left(msg))
-    }
+  test("Should be able to return an error") {
+    val msg           = "Error"
+    val e: Check[Int] = err(msg)
+    assertIO(runValue_(e), Left(msg))
+  }
 
-    test("Should be able to do an or...") {
-        val c: Check[Int] = ok(2)
-        val c3: Check[Int] = ok(3)
-        val e: Check[Int] = err("Err")
-        val e1: Check[Int] = err("Err1")
-        assertIO(runValue_(orElse(c, e)), Right(2))
-        assertIO(runValue_(orElse(e, c)), Right(2))
-        assertIO(runValue_(orElse(c, c3)), Right(2))
-        assertIO(runValue_(orElse(e, e1)), Left("Err1"))
-      }
-    test("Should be able to do checkSome...") {
-        val c1: Check[Int] = ok(1)
-        val c2: Check[Int] = ok(2)
-        val e: Check[Int] = err("Err")
-        val e1: Check[Int] = err("Err1")
-        assertIO(runValue_(checkSome(List(c1, e), "No one")), Right(1))
-        assertIO(runValue_(checkSome(List(e, c2, e), "No one")), Right(2))
-        assertIO(runValue_(checkSome(List(e, e1), "No one")), Left("No one"))
-        assertIO(runValue_(checkSome(List(c1, c2), "No one")), Right(1))
-      }
-/*      it("Should be able to run local") {
+  test("Should be able to do an or...") {
+    val c: Check[Int]  = ok(2)
+    val c3: Check[Int] = ok(3)
+    val e: Check[Int]  = err("Err")
+    val e1: Check[Int] = err("Err1")
+    assertIO(runValue_(orElse(c, e)), Right(2))
+    assertIO(runValue_(orElse(e, c)), Right(2))
+    assertIO(runValue_(orElse(c, c3)), Right(2))
+    assertIO(runValue_(orElse(e, e1)), Left("Err1"))
+  }
+  test("Should be able to do checkSome...") {
+    val c1: Check[Int] = ok(1)
+    val c2: Check[Int] = ok(2)
+    val e: Check[Int]  = err("Err")
+    val e1: Check[Int] = err("Err1")
+    assertIO(runValue_(checkSome(List(c1, e), "No one")), Right(1))
+    assertIO(runValue_(checkSome(List(e, c2, e), "No one")), Right(2))
+    assertIO(runValue_(checkSome(List(e, e1), "No one")), Left("No one"))
+    assertIO(runValue_(checkSome(List(c1, c2), "No one")), Right(1))
+  }
+  /*      it("Should be able to run local") {
         def addEnv(name: String, value: Int): Env => Env =
           _.updated(name, value)
 
@@ -106,9 +104,9 @@ class CheckerCatsTest extends CatsEffectSuite {
       } */
  } */
 
-{
- val counter = new AtomicInteger(0) 
- def comp(x: Int): Check[(Int,Boolean)] = {
+  {
+    val counter = new AtomicInteger(0)
+    def comp(x: Int): Check[(Int, Boolean)] = {
       counter.getAndIncrement;
       // println(s"Comp($x), steps: $counter")
       if (x % 2 == 0) {
@@ -117,31 +115,39 @@ class CheckerCatsTest extends CatsEffectSuite {
         ok((x, false))
       }
     }
- shouldCheckSomeFlag("checkSomeFlag(LazyList(2,4), (0,false)) = (2, true)|1",LazyList(2, 4),comp,ok((0,false)),(2,true),1)
+    shouldCheckSomeFlag(
+      "checkSomeFlag(LazyList(2,4), (0,false)) = (2, true)|1",
+      LazyList(2, 4),
+      comp,
+      ok((0, false)),
+      (2, true),
+      1
+    )
 
-// TODO: We commented the following tests because they fail...check if the use of AtomicInteger has a conflict with IOs 
+// TODO: We commented the following tests because they fail...check if the use of AtomicInteger has a conflict with IOs
 //  shouldCheckSomeFlag("checkSomeFlag(LazyList1,4), (0,false)) = (4, true)|2",LazyList(1, 4),comp,ok((0,false)),(4,true),2)
- 
 
 // shouldCheckSomeFlag("checkSomeFlag(LazyList(1,3,5), (0,false)) = (0, false)|3",LazyList(1, 3, 5),comp,ok((0,false)),(0,false),3)
 // shouldCheckSomeFlag("checkSomeFlag(LazyList(2,4,...), (0,false)) = (2, true)|1",LazyList.from(2,2),comp,ok((0,false)),(2,true),1)
 // shouldCheckSomeFlag("checkSomeFlag(LazyList(), (0,false)) = (0, false)|0",LazyList(),comp,ok((0,false)),(0,false),0)
 
- def shouldCheckSomeFlag(msg: String,
-                            ls: => LazyList[Int],
-                            check: Int => Check[(Int,Boolean)],
-                            last: => Check[(Int,Boolean)],
-                            expected: (Int,Boolean),
-                            stepsExpected: Int): Unit = {
+    def shouldCheckSomeFlag(
+        msg: String,
+        ls: => LazyList[Int],
+        check: Int => Check[(Int, Boolean)],
+        last: => Check[(Int, Boolean)],
+        expected: (Int, Boolean),
+        stepsExpected: Int
+    ): Unit = {
       test(msg) {
         counter.set(0)
-        assertIO(runValueFlag(checkSomeFlag(ls, check, last)),Right(expected))
+        assertIO(runValueFlag(checkSomeFlag(ls, check, last)), Right(expected))
         assertEquals(counter.get, stepsExpected)
       }
- }
-}
+    }
+  }
 
-/*{ 
+  /*{
  val counter = new AtomicInteger(0)
  def comp(x: Int): Check[(Int,Boolean)] = {
       counter.getAndIncrement;
@@ -174,7 +180,7 @@ class CheckerCatsTest extends CatsEffectSuite {
       }
   }
 } */
-/*
+  /*
 {
   val counter = new AtomicInteger(0)
   def comp(x: Int): Check[(Int,Boolean)] = {
@@ -210,7 +216,7 @@ class CheckerCatsTest extends CatsEffectSuite {
   }
  } */
 
-/* {
+  /* {
    val counter = new AtomicInteger(0)
    def comp(x: Int): Check[(Int,Boolean)] = {
       counter.getAndIncrement;
@@ -237,7 +243,7 @@ class CheckerCatsTest extends CatsEffectSuite {
     test(msg) {
       assertIO(runValueFlag(checkSequenceFlag(ls, last)), Right(expected))
     }
-  } 
+  }
 
 } */
 

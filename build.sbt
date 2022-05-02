@@ -245,6 +245,7 @@ lazy val compilationSettings = Seq(
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   organization        := "es.weso",
+  sonatypeCredentialHost := "s01.oss.sonatype.org", 
   sonatypeProfileName := ("es.weso"),
   homepage            := Some(url("https://github.com/weso/utils")),
   licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),

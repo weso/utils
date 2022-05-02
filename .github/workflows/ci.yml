@@ -9,9 +9,9 @@ name: Continuous Integration
 
 on:
   pull_request:
-    branches: ['*']
+    branches: ['**']
   push:
-    branches: ['*']
+    branches: ['**']
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -23,7 +23,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         scala: [2.12.15]
-        java: [adopt@1.8]
+        java: [temurin@11]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -31,10 +31,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java and Scala
-        uses: olafurpg/setup-scala@v10
+      - name: Setup Java (temurin@11)
+        if: matrix.java == 'temurin@11'
+        uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java }}
+          distribution: temurin
+          java-version: 11
 
       - name: Cache sbt
         uses: actions/cache@v2
@@ -55,7 +57,7 @@ jobs:
         run: sbt ++${{ matrix.scala }} clean test
 
       - name: Compress target directories
-        run: tar cf targets.tar modules/validating/target modules/utils/target modules/utilsTest/target target utils-docs/target modules/testsuite/target modules/typing/target project/target
+        run: tar cf targets.tar .js/target target modules/validating/.js/target .jvm/target modules/utils/.js/target modules/validating/.jvm/target modules/testsuite/.js/target utils-docs/.jvm/target modules/testsuite/.jvm/target modules/typing/.js/target modules/typing/.jvm/target modules/utilsTest/.jvm/target modules/utils/.jvm/target utils-docs/.js/target modules/utilsTest/.js/target project/target
 
       - name: Upload target directories
         uses: actions/upload-artifact@v2
@@ -71,7 +73,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         scala: [2.12.15]
-        java: [adopt@1.8]
+        java: [temurin@11]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -79,10 +81,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java and Scala
-        uses: olafurpg/setup-scala@v10
+      - name: Setup Java (temurin@11)
+        if: matrix.java == 'temurin@11'
+        uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java }}
+          distribution: temurin
+          java-version: 11
 
       - name: Cache sbt
         uses: actions/cache@v2

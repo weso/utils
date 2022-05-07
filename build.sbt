@@ -40,49 +40,49 @@ val Java11 = JavaSpec.temurin("11")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
 
-lazy val utilsRoot = 
+lazy val utilsRoot =
   crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("."))
-  .settings(commonSettings)
-  .aggregate(typing, validating, utilsTest, utils, testsuite, docs)
-  .settings(
-    ThisBuild / turbo  := true,
-    crossScalaVersions := Nil,
-    publish / skip     := true,
-    ThisBuild / githubWorkflowBuild := Seq(
-      WorkflowStep.Sbt(
-        List(
-          "clean",
-          // "coverage",
-          "test"
-          // "coverageReport",
-          // "scalafmtCheckAll"
-        ),
-        id = None,
-        name = Some("Test")
-      )
-      /* WorkflowStep.Use(
+    .crossType(CrossType.Pure)
+    .in(file("."))
+    .settings(commonSettings)
+    .aggregate(typing, validating, utilsTest, utils, testsuite, docs)
+    .settings(
+      ThisBuild / turbo  := true,
+      crossScalaVersions := Nil,
+      publish / skip     := true,
+      ThisBuild / githubWorkflowBuild := Seq(
+        WorkflowStep.Sbt(
+          List(
+            "clean",
+            // "coverage",
+            "test"
+            // "coverageReport",
+            // "scalafmtCheckAll"
+          ),
+          id = None,
+          name = Some("Test")
+        )
+        /* WorkflowStep.Use(
      UseRef.Public("codecov", "codecov-action", "e156083f13aff6830c92fc5faa23505779fbf649"), // v1.2.1
      name = Some("Upload code coverage")
     ) */
+      )
     )
-  )
 
-lazy val typing = 
+lazy val typing =
   crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/typing"))
-  .dependsOn(utils)
-  .settings(commonSettings)
-  .settings(
-    crossScalaVersions := supportedScalaVersions,
-    libraryDependencies ++= Seq(
-      catsCore,
-      catsKernel,
-      pprint
+    .crossType(CrossType.Pure)
+    .in(file("modules/typing"))
+    .dependsOn(utils)
+    .settings(commonSettings)
+    .settings(
+      crossScalaVersions := supportedScalaVersions,
+      libraryDependencies ++= Seq(
+        catsCore,
+        catsKernel,
+        pprint
+      )
     )
-  )
 
 lazy val testsuite = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -247,16 +247,16 @@ lazy val compilationSettings = Seq(
 )
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
-  organization        := "es.weso",
+  organization           := "es.weso",
   sonatypeCredentialHost := "s01.oss.sonatype.org",
-  sonatypeRepository := "https://s01.oss.sonatype.org/service/local", 
-  sonatypeProfileName := "es.weso",
-  homepage            := Some(url("https://github.com/weso/utils")),
-  licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
-  scmInfo             := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
-  autoAPIMappings     := true,
-  apiURL              := Some(url("http://weso.github.io/utils/latest/api/")),
-  autoAPIMappings     := true,
+  sonatypeRepository     := "https://s01.oss.sonatype.org/service/local",
+  sonatypeProfileName    := "es.weso",
+  homepage               := Some(url("https://github.com/weso/utils")),
+  licenses               := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
+  scmInfo         := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
+  autoAPIMappings := true,
+  apiURL          := Some(url("http://weso.github.io/utils/latest/api/")),
+  autoAPIMappings := true,
   developers := List(
     Developer(
       id = "labra",

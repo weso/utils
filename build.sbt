@@ -244,15 +244,15 @@ lazy val compilationSettings = Seq(
 )
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
-  organization           := "es.weso",
-  sonatypeCredentialHost := "s01.oss.sonatype.org",
-  sonatypeProfileName    := ("es.weso"),
-  homepage               := Some(url("https://github.com/weso/utils")),
-  licenses               := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
-  scmInfo         := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
-  autoAPIMappings := true,
-  apiURL          := Some(url("http://weso.github.io/utils/latest/api/")),
-  autoAPIMappings := true,
+  organization        := "es.weso",
+  sonatypeCredentialHost := "s01.oss.sonatype.org", 
+  sonatypeProfileName := ("es.weso"),
+  homepage            := Some(url("https://github.com/weso/utils")),
+  licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
+  scmInfo             := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
+  autoAPIMappings     := true,
+  apiURL              := Some(url("http://weso.github.io/utils/latest/api/")),
+  autoAPIMappings     := true,
   developers := List(
     Developer(
       id = "labra",

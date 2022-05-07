@@ -3,10 +3,11 @@ import cats.implicits._
 import scala.concurrent.duration._
 
 case class TestConfig(
-    maxTimePerTest: FiniteDuration,
-    verbose: Boolean
+  maxTimePerTest: FiniteDuration,
+  verbose: Boolean
 )
 
 object TestConfig {
   def initial: TestConfig = TestConfig(5.second, false)
 }
+ 

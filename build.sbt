@@ -1,4 +1,5 @@
 import sbtcrossproject.CrossProject
+
 lazy val scala212 = "2.12.15"
 lazy val scala213 = "2.13.7"
 lazy val scala3   = "3.1.0"
@@ -39,7 +40,8 @@ val Java11 = JavaSpec.temurin("11")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
 
-lazy val utilsRoot = crossProject(JSPlatform, JVMPlatform)
+lazy val utilsRoot = 
+  crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("."))
   .settings(commonSettings)
@@ -67,7 +69,8 @@ lazy val utilsRoot = crossProject(JSPlatform, JVMPlatform)
     )
   )
 
-lazy val typing = crossProject(JSPlatform, JVMPlatform)
+lazy val typing = 
+  crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/typing"))
   .dependsOn(utils)
@@ -245,8 +248,9 @@ lazy val compilationSettings = Seq(
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
   organization        := "es.weso",
-  sonatypeCredentialHost := "s01.oss.sonatype.org", 
-  sonatypeProfileName := ("es.weso"),
+  sonatypeCredentialHost := "s01.oss.sonatype.org",
+  sonatypeRepository := "https://s01.oss.sonatype.org/service/local", 
+  sonatypeProfileName := "es.weso",
   homepage            := Some(url("https://github.com/weso/utils")),
   licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
   scmInfo             := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),

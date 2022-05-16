@@ -21,16 +21,16 @@ class IOUtilsTest extends CatsEffectSuite {
   }
 
   test(s"SHould fail when one fails") {
-        val r: ESIO[Int] = for {
-            v1 <- ok_es(3)
-            v2 <- fail_es[Int]("No number")
-            v3 <- ok_es(4)
-        } yield v1 + v2 + v3
+    val r: ESIO[Int] = for {
+      v1 <- ok_es(3)
+      v2 <- fail_es[Int]("No number")
+      v3 <- ok_es(4)
+    } yield v1 + v2 + v3
 
-        run_es(r).assertEquals(Left("No number"))
+    run_es(r).assertEquals(Left("No number"))
   }
 
-/*  test(s"SHould fail when one fails in IO") {
+  /*  test(s"SHould fail when one fails in IO") {
    val r: IO[Int] = for {
             v1 <- ok(3)
             v2 <- err[Int]("No number")
@@ -39,7 +39,7 @@ class IOUtilsTest extends CatsEffectSuite {
    //     an [IOException] should be thrownBy (r.unsafeRunSync())
   } */
 
-/*  test(s"Should convert io IO(3) to Right(3)") {
+  /*  test(s"Should convert io IO(3) to Right(3)") {
     val r = IO(3)
     io2ES(r).assertEquals(Right(3))
   } */
@@ -49,9 +49,7 @@ class IOUtilsTest extends CatsEffectSuite {
           io2ES(r) should be(Left("Exc"))
       } */
 
-    
-
-/*    describe(s"Stream IO") {
+  /*    describe(s"Stream IO") {
       it(s"SHould convert lazy list to stream") {
         val ls: LazyList[Int] = LazyList(1,2,3)
         val r = streamFromLazyList(ls)

@@ -1,7 +1,7 @@
 package es.weso.utils
 
 object LogInfo {
-  var level: Int = 0
+  var level: Int  = 0
   val indent: Int = 2
 
   def apply(msg: String, incrementLevel: Int = 0): Unit = {
@@ -12,4 +12,3 @@ object LogInfo {
   }
 
 }
-

@@ -11,17 +11,15 @@ case class RegEx(pattern: String, maybeFlags: Option[String]) {
   }
 
   def intFlags(flags: String): Int = {
-    flags.foldLeft(0)((flagAcc, c) =>
-      c match {
-        case 'i' => flagAcc | Pattern.CASE_INSENSITIVE
-        case 'd' => flagAcc | Pattern.UNIX_LINES
-        case 'm' => flagAcc | Pattern.MULTILINE
-        case 's' => flagAcc | Pattern.DOTALL
-        case 'u' => flagAcc | Pattern.UNICODE_CASE
-        case 'x' => flagAcc | Pattern.COMMENTS
-        case 'U' => flagAcc | Pattern.UNICODE_CHARACTER_CLASS
-      }
-    )
+    flags.foldLeft(0)((flagAcc,c) => c match {
+      case 'i' => flagAcc | Pattern.CASE_INSENSITIVE
+      case 'd' => flagAcc | Pattern.UNIX_LINES
+      case 'm' => flagAcc | Pattern.MULTILINE
+      case 's' => flagAcc | Pattern.DOTALL
+      case 'u' => flagAcc | Pattern.UNICODE_CASE
+      case 'x' => flagAcc | Pattern.COMMENTS
+      case 'U' => flagAcc | Pattern.UNICODE_CHARACTER_CLASS
+    })
   }
 
   def matches(str: String): Either[String, Boolean] = {
@@ -31,7 +29,7 @@ case class RegEx(pattern: String, maybeFlags: Option[String]) {
     try {
       val pattern = maybeFlags match {
         case Some(value) => Pattern.compile(cleanPattern, intFlags(value))
-        case None        => Pattern.compile(cleanPattern)
+        case None => Pattern.compile(cleanPattern)
       }
       // println(s"pattern: $pattern")
       Right(pattern.matcher(str).find())
@@ -53,4 +51,4 @@ case class RegEx(pattern: String, maybeFlags: Option[String]) {
     pattern.matches(str)
   }
 
-}*/
+}*/ 

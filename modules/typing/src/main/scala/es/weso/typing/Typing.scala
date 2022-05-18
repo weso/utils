@@ -24,19 +24,21 @@ abstract class Typing[Key, Value, Err, Evidence] {
 
   def getFailedValues(key: Key): Set[Value]
 
-  def addEvidences(key: Key, value: Value, es: List[Evidence]): Typing[Key, Value, Err, Evidence]
+  def addEvidences(key: Key, value: Value,
+    es: List[Evidence]): Typing[Key, Value, Err, Evidence]
 
   def addEvidence(key: Key, value: Value, es: Evidence): Typing[Key, Value, Err, Evidence]
 
   def addNotEvidence(key: Key, value: Value, e: Err): Typing[Key, Value, Err, Evidence]
 
-  def removeValue(key: Key, value: Value): Typing[Key, Value, Err, Evidence]
+  def removeValue(key: Key, value: Value): Typing[Key, Value, Err, Evidence] 
 
-  def removeValuesWith(cond: Value => Boolean): Typing[Key, Value, Err, Evidence]
+  def removeValuesWith(cond: Value => Boolean): Typing[Key,Value,Err,Evidence]
 
-  def negateValuesWith(cond: Value => Boolean, err: Err): Typing[Key, Value, Err, Evidence]
+  def negateValuesWith(cond: Value => Boolean, err: Err): Typing[Key,Value,Err,Evidence]
 
-  def addType(key: Key, value: Value, evidences: List[Evidence] = List()): Typing[Key, Value, Err, Evidence] =
+  def addType(key: Key, value: Value,
+    evidences: List[Evidence] = List()): Typing[Key, Value, Err, Evidence] =
     addEvidences(key, value, evidences)
 
   def combineTyping(t: Typing[Key, Value, Err, Evidence]): Typing[Key, Value, Err, Evidence]
@@ -51,7 +53,7 @@ abstract class Typing[Key, Value, Err, Evidence] {
       val (key, mapValues) = current
       def combValues(rest: SimpleSeq, pair: (Value, TypingResult[Err, Evidence])): SimpleSeq = {
         val (value, result) = pair
-        val r               = if (result.isOK) Right(value) else Left(value)
+        val r = if (result.isOK) Right(value) else Left(value)
         (key, r) +: rest
       }
       mapValues.foldLeft(zero)(combValues) ++ x
@@ -63,45 +65,40 @@ abstract class Typing[Key, Value, Err, Evidence] {
 
 object Typing {
 
-  /** Creates an empty typing
-    */
+  /**
+   *  Creates an empty typing
+   */
   def empty[Key, Value, Err, Evidence]: Typing[Key, Value, Err, Evidence] = {
     val m: immutable.Map[Key, immutable.Map[Value, TypingResult[Err, Evidence]]] = immutable.Map()
     TypingMap(m)
   }
 
-  def combineTypings[Key, Value, Err, Evidence](
-      ts: Seq[Typing[Key, Value, Err, Evidence]]
-  ): Typing[Key, Value, Err, Evidence] = {
+  def combineTypings[Key, Value, Err, Evidence](ts: Seq[Typing[Key, Value, Err, Evidence]]
+                                               ): Typing[Key, Value, Err, Evidence] = {
     val zero: Typing[Key, Value, Err, Evidence] = Typing.empty
     ts.foldLeft(zero)(_.combineTyping(_))
   }
 
-  implicit def showTyping[Key: Show, Value: Show, Err: Show, Evidence: Show]: Show[Typing[Key, Value, Err, Evidence]] =
-    new Show[Typing[Key, Value, Err, Evidence]] {
+  implicit def showTyping[Key: Show, Value: Show, Err: Show, Evidence: Show]: Show[Typing[Key,Value,Err,Evidence]] = new Show[Typing[Key, Value, Err, Evidence]] {
 
-      import TypingResult.showTypingResult
+    import TypingResult.showTypingResult
 
-      override def show(e: Typing[Key, Value, Err, Evidence]): String = {
-        e match {
-          case tm: TypingMap[Key, Value, Err, Evidence] =>
-            tm.m
-              .map {
-                case (key, valuesMap) => {
-                  valuesMap
-                    .map {
-                      case (value, result) => {
-                        val showV = (if (result.isOK) "+" else "-") + value.show
-                        s"($key: $showV) -> ${result.show}"
-                      }
-                    }
-                    .mkString("\n")
+    override def show(e: Typing[Key, Value, Err, Evidence]): String = {
+      e match {
+        case tm: TypingMap[Key, Value, Err, Evidence] =>
+          tm.m.map {
+            case (key, valuesMap) => {
+              valuesMap.map {
+                case (value, result) => {
+                  val showV = (if (result.isOK) "+" else "-") + value.show
+                  s"($key: $showV) -> ${result.show}"
                 }
-              }
-              .mkString("\n")
-          case _ => "Unknown type of Typing"
-        }
+              }.mkString("\n")
+            }
+        }.mkString("\n")
+        case _ => "Unknown type of Typing"
       }
-    }
+  }
+  }
 
 }

@@ -33,10 +33,10 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val Java8 = "adopt@1.8"
-val Java11 = "adopt@1.11"
+val Java11 = JavaSpec.temurin("11")
 
-ThisBuild / githubWorkflowJavaVersions := Seq(Java8)
+
+ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
 
 lazy val utilsRoot = project
   .in(file("."))

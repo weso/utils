@@ -1,5 +1,5 @@
-import sbtcrossproject.CrossProject
-import com.jsuereth.sbtpgp.PgpKeys._ 
+// import sbtcrossproject.CrossProject
+// import com.jsuereth.sbtpgp.PgpKeys._   // for publishSigned
 
 lazy val scala212 = "2.12.15"
 lazy val scala213 = "2.13.7"
@@ -42,8 +42,8 @@ val Java11 = JavaSpec.temurin("11")
 ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
 
 lazy val utilsRoot = 
-  // project 
-  crossProject(JVMPlatform)
+  project 
+  // crossProject(JVMPlatform)
   // .crossType(CrossType.Pure)
   .in(file("."))
   .settings(commonSettings)
@@ -52,7 +52,7 @@ lazy val utilsRoot =
     ThisBuild / turbo := true,
     crossScalaVersions := Nil,
     publish / skip := true,
-    publishSigned / skip := true,
+    // publishSigned / skip := true,
     ThisBuild / githubWorkflowBuild := Seq(
      WorkflowStep.Sbt(
       List("clean",
@@ -72,9 +72,9 @@ lazy val utilsRoot =
   )
 
 lazy val typing = 
-  // project 
-  crossProject(JVMPlatform)
-  // .crossType(CrossType.Pure)
+  project 
+  // crossProject(JVMPlatform)
+  //.crossType(CrossType.Pure)
   .in(file("modules/typing"))
   .dependsOn(utils)
   .settings(commonSettings)
@@ -88,8 +88,8 @@ lazy val typing =
   )
 
 lazy val testsuite = 
-  // project 
-  crossProject(JVMPlatform)
+  project 
+  //crossProject(JVMPlatform)
   // .crossType(CrossType.Pure)
   .in(file("modules/testsuite"))
   .dependsOn(utils)
@@ -105,8 +105,8 @@ lazy val testsuite =
   )
 
 lazy val utilsTest = 
-  // project 
-  crossProject(JVMPlatform)
+  project 
+  // crossProject(JVMPlatform)
   //.crossType(CrossType.Pure)
   .in(file("modules/utilsTest"))
   .settings(commonSettings)
@@ -127,8 +127,9 @@ lazy val utilsTest =
 
 
   lazy val validating = 
-   crossProject(JVMPlatform)
-   //.crossType(CrossType.Pure)
+   project 
+   // crossProject(JVMPlatform)
+   // .crossType(CrossType.Pure)
    .in(file("modules/validating"))
    .dependsOn(utils % "test -> test; compile -> compile")
    .settings(commonSettings)
@@ -141,8 +142,8 @@ lazy val utilsTest =
    )
 
 lazy val utils = 
-  // project 
-  crossProject(JVMPlatform)
+  project 
+  // crossProject(JVMPlatform)
   //.withoutSuffixFor(JVMPlatform)
   //.crossType(CrossType.Pure)
   .in(file("modules/utils"))
@@ -162,15 +163,15 @@ lazy val utils =
     ),
   )
 
-lazy val utilsJvm = utils.jvm
-lazy val validatingJvm = validating.jvm
-lazy val utilsTestJvm = utilsTest.jvm
+// lazy val utilsJvm = utils.jvm
+// lazy val validatingJvm = validating.jvm
+// lazy val utilsTestJvm = utilsTest.jvm
 
 
 lazy val docs = 
-  // project
-  crossProject(JVMPlatform)
-  .crossType(CrossType.Pure)
+  project
+  // crossProject(JVMPlatform)
+  // .crossType(CrossType.Pure)
   .in(file("utils-docs"))
   .settings(
     noPublishSettings,
@@ -184,7 +185,7 @@ lazy val mdocSettings = Seq(
   mdocVariables := Map(
     "VERSION" -> version.value
   ),
-  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(utilsJvm),
+  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(utils),
   ScalaUnidoc / unidoc / target := (LocalRootProject / baseDirectory).value / "website" / "static" / "api",
   cleanFiles += (ScalaUnidoc / unidoc / target).value,
   docusaurusCreateSite := docusaurusCreateSite

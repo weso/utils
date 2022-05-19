@@ -1,20 +1,22 @@
+import sbtcrossproject.CrossProject
+
 lazy val scala212 = "2.12.15"
 lazy val scala213 = "2.13.7"
-lazy val scala3   = "3.1.0"
+lazy val scala3   = "3.1.2"
 lazy val supportedScalaVersions = List(
+  scala3,
   scala213,
-  scala212,
-  scala3
+  scala212
  )
 
 // Dependency versions
 lazy val catsVersion             = "2.7.0"
-lazy val catsEffectVersion       = "3.3.0"
+lazy val catsEffectVersion       = "3.3.11"
 lazy val circeVersion            = "0.14.1"
-lazy val fs2Version              = "3.2.3"
+lazy val fs2Version              = "3.2.7"
 lazy val munitVersion            = "0.7.29"
 lazy val munitEffectVersion      = "1.0.7"
-lazy val pprintVersion           = "0.6.6"
+lazy val pprintVersion           = "0.7.3"
 lazy val catsCore          = "org.typelevel"              %% "cats-core"           % catsVersion
 lazy val catsKernel        = "org.typelevel"              %% "cats-kernel"         % catsVersion
 lazy val catsEffect        = "org.typelevel"              %% "cats-effect"         % catsEffectVersion
@@ -33,12 +35,14 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-val Java8 = "adopt@1.8"
-val Java11 = "adopt@1.11"
+val Java11 = JavaSpec.temurin("11")
 
-ThisBuild / githubWorkflowJavaVersions := Seq(Java8)
 
-lazy val utilsRoot = project
+ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
+
+lazy val utilsRoot = 
+  crossProject(JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("."))
   .settings(commonSettings)
   .aggregate(typing, validating, utilsTest, utils, testsuite, docs)
@@ -64,7 +68,9 @@ lazy val utilsRoot = project
    )
   )
 
-lazy val typing = project
+lazy val typing = 
+  crossProject(JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("modules/typing"))
   .dependsOn(utils)
   .settings(commonSettings)
@@ -77,7 +83,9 @@ lazy val typing = project
     )
   )
 
-lazy val testsuite = project
+lazy val testsuite = 
+  crossProject(JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("modules/testsuite"))
   .dependsOn(utils)
   .settings(commonSettings)
@@ -91,7 +99,9 @@ lazy val testsuite = project
     ),
   )
 
-lazy val utilsTest = project
+lazy val utilsTest = 
+  crossProject(JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("modules/utilsTest"))
   .settings(commonSettings)
   .settings(
@@ -110,19 +120,23 @@ lazy val utilsTest = project
   )
 
 
-  lazy val validating = project
-  .in(file("modules/validating"))
-  .dependsOn(utils % "test -> test; compile -> compile")
-  .settings(commonSettings)
-  .settings(
-    crossScalaVersions := supportedScalaVersions,
-    libraryDependencies ++= Seq(
-    catsCore,
-    catsKernel,
-    )
-  )
+  lazy val validating = 
+    crossProject(JVMPlatform)
+   .crossType(CrossType.Pure)
+   .in(file("modules/validating"))
+   .dependsOn(utils % "test -> test; compile -> compile")
+   .settings(commonSettings)
+   .settings(
+     crossScalaVersions := supportedScalaVersions,
+     libraryDependencies ++= Seq(
+     catsCore,
+     catsKernel,
+     )
+   )
 
-lazy val utils = project
+lazy val utils = 
+  crossProject(JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("modules/utils"))
   .settings(commonSettings)
   .settings(
@@ -140,7 +154,9 @@ lazy val utils = project
     ),
   )
 
-lazy val docs = project
+lazy val docs = 
+  crossProject(JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("utils-docs"))
   .settings(
     noPublishSettings,
@@ -154,7 +170,7 @@ lazy val mdocSettings = Seq(
   mdocVariables := Map(
     "VERSION" -> version.value
   ),
-  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(utils),
+  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(utils.jvm),
   ScalaUnidoc / unidoc / target := (LocalRootProject / baseDirectory).value / "website" / "static" / "api",
   cleanFiles += (ScalaUnidoc / unidoc / target).value,
   docusaurusCreateSite := docusaurusCreateSite
@@ -181,7 +197,7 @@ lazy val ghPagesSettings = Seq(
  **********************************************************/
 
 lazy val noDocProjects = Seq[ProjectReference](
-  validating
+  // validating
 )
 
 lazy val noPublishSettings = publish / skip := true

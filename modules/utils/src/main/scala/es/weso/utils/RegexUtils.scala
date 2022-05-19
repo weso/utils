@@ -31,7 +31,8 @@ case class RegEx(pattern: String, maybeFlags: Option[String]) {
         case Some(value) => Pattern.compile(cleanPattern, intFlags(value))
         case None => Pattern.compile(cleanPattern)
       }
-      Right(pattern.matcher(str).matches())
+      // println(s"pattern: $pattern")
+      Right(pattern.matcher(str).find())
     } catch {
       case e: Exception =>
         Left(s"Error: $e, matching $str with /$cleanPattern/${maybeFlags.getOrElse("")}")

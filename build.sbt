@@ -140,8 +140,9 @@ lazy val utilsTest =
    )
 
 lazy val utils = 
-  project 
-  // crossProject(JVMPlatform)
+  // project 
+  crossProject(JVMPlatform)
+  .withoutSuffixFor(JVMPlatform)
   //.crossType(CrossType.Pure)
   .in(file("modules/utils"))
   .settings(commonSettings)

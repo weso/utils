@@ -3,7 +3,7 @@
 
 lazy val scala212 = "2.12.15"
 lazy val scala213 = "2.13.8"
-lazy val scala3 = "3.1.3"
+lazy val scala3   = "3.1.3"
 lazy val supportedScalaVersions = List(
   scala3,
   scala213,
@@ -11,29 +11,29 @@ lazy val supportedScalaVersions = List(
 )
 
 // Dependency versions
-lazy val catsVersion = "2.7.0"
-lazy val catsEffectVersion = "3.3.12"
-lazy val circeVersion = "0.14.2"
-lazy val fs2Version = "3.2.8"
-lazy val munitVersion = "0.7.29"
+lazy val catsVersion        = "2.7.0"
+lazy val catsEffectVersion  = "3.3.12"
+lazy val circeVersion       = "0.14.2"
+lazy val fs2Version         = "3.2.8"
+lazy val munitVersion       = "0.7.29"
 lazy val munitEffectVersion = "1.0.7"
-lazy val pprintVersion = "0.7.3"
-lazy val catsCore = "org.typelevel" %% "cats-core" % catsVersion
-lazy val catsKernel = "org.typelevel" %% "cats-kernel" % catsVersion
-lazy val catsEffect = "org.typelevel" %% "cats-effect" % catsEffectVersion
-lazy val circeCore = "io.circe" %% "circe-core" % circeVersion
-lazy val circeGeneric = "io.circe" %% "circe-generic" % circeVersion
-lazy val circeParser = "io.circe" %% "circe-parser" % circeVersion
-lazy val fs2 = "co.fs2" %% "fs2-core" % fs2Version
-lazy val fs2io = "co.fs2" %% "fs2-io" % fs2Version
-lazy val munit = "org.scalameta" %% "munit" % munitVersion
-lazy val munitEffects = "org.typelevel" %% "munit-cats-effect-3" % munitEffectVersion
-lazy val pprint = "com.lihaoyi" %% "pprint" % pprintVersion
+lazy val pprintVersion      = "0.7.3"
+lazy val catsCore           = "org.typelevel" %% "cats-core"           % catsVersion
+lazy val catsKernel         = "org.typelevel" %% "cats-kernel"         % catsVersion
+lazy val catsEffect         = "org.typelevel" %% "cats-effect"         % catsEffectVersion
+lazy val circeCore          = "io.circe"      %% "circe-core"          % circeVersion
+lazy val circeGeneric       = "io.circe"      %% "circe-generic"       % circeVersion
+lazy val circeParser        = "io.circe"      %% "circe-parser"        % circeVersion
+lazy val fs2                = "co.fs2"        %% "fs2-core"            % fs2Version
+lazy val fs2io              = "co.fs2"        %% "fs2-io"              % fs2Version
+lazy val munit              = "org.scalameta" %% "munit"               % munitVersion
+lazy val munitEffects       = "org.typelevel" %% "munit-cats-effect-3" % munitEffectVersion
+lazy val pprint             = "com.lihaoyi"   %% "pprint"              % pprintVersion
 
 def priorTo2_13(scalaVersion: String): Boolean =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, minor)) if minor < 13 => true
-    case _ => false
+    case _                              => false
   }
 
 val Java11 = JavaSpec.temurin("11")
@@ -48,9 +48,9 @@ lazy val utilsRoot =
     .settings(commonSettings)
     .aggregate(typing, validating, utilsTest, utils, testsuite, docs)
     .settings(
-      ThisBuild / turbo := true,
+      ThisBuild / turbo  := true,
       crossScalaVersions := Nil,
-      publish / skip := true,
+      publish / skip     := true,
       // publishSigned / skip := true,
       ThisBuild / githubWorkflowBuild := Seq(
         WorkflowStep.Sbt(
@@ -125,20 +125,20 @@ lazy val utilsTest =
       )
     )
 
-  lazy val validating =
-    project
-      // crossProject(JVMPlatform)
-      // .crossType(CrossType.Pure)
-      .in(file("modules/validating"))
-      .dependsOn(utils % "test -> test; compile -> compile")
-      .settings(commonSettings)
-      .settings(
-        crossScalaVersions := supportedScalaVersions,
-        libraryDependencies ++= Seq(
-          catsCore,
-          catsKernel
-        )
+lazy val validating =
+  project
+    // crossProject(JVMPlatform)
+    // .crossType(CrossType.Pure)
+    .in(file("modules/validating"))
+    .dependsOn(utils % "test -> test; compile -> compile")
+    .settings(commonSettings)
+    .settings(
+      crossScalaVersions := supportedScalaVersions,
+      libraryDependencies ++= Seq(
+        catsCore,
+        catsKernel
       )
+    )
 
 lazy val utils =
   project
@@ -176,8 +176,7 @@ lazy val docs =
     .settings(
       noPublishSettings,
       mdocSettings,
-      ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(
-        noDocProjects: _*)
+      ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(noDocProjects: _*)
     )
     .dependsOn(typing, validating, utilsTest, utils, testsuite)
     .enablePlugins(MdocPlugin, DocusaurusPlugin, ScalaUnidocPlugin)
@@ -187,7 +186,7 @@ lazy val mdocSettings = Seq(
     "VERSION" -> version.value
   ),
   ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(utils),
-  ScalaUnidoc / unidoc / target := (LocalRootProject / baseDirectory).value / "website" / "static" / "api",
+  ScalaUnidoc / unidoc / target              := (LocalRootProject / baseDirectory).value / "website" / "static" / "api",
   cleanFiles += (ScalaUnidoc / unidoc / target).value,
   docusaurusCreateSite := docusaurusCreateSite.dependsOn(Compile / unidoc).value,
   docusaurusPublishGhpages :=
@@ -220,7 +219,7 @@ lazy val noPublishSettings = publish / skip := true
 
 lazy val sharedDependencies = Seq(
   libraryDependencies ++= Seq(
-    munit % Test,
+    munit        % Test,
     munitEffects % Test
   ),
   testFrameworks += new TestFramework("munit.Framework")
@@ -262,20 +261,20 @@ lazy val compilationSettings = Seq(
 )
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
-  organization := "es.weso",
+  organization        := "es.weso",
   sonatypeProfileName := "es.weso",
-  homepage := Some(url("https://github.com/weso/utils")),
-  licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
-  scmInfo := Some(
-    ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
-  autoAPIMappings := true,
-  apiURL := Some(url("http://weso.github.io/utils/latest/api/")),
-  autoAPIMappings := true,
+  homepage            := Some(url("https://github.com/weso/utils")),
+  licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
+  scmInfo             := Some(ScmInfo(url("https://github.com/weso/utils"), "scm:git:git@github.com:weso/utils.git")),
+  autoAPIMappings     := true,
+  apiURL              := Some(url("http://weso.github.io/utils/latest/api/")),
+  autoAPIMappings     := true,
   developers := List(
     Developer(
       id = "labra",
       name = "Jose Emilio Labra Gayo",
       email = "jelabra@gmail.com",
       url = url("https://labra.weso.es")
-    ))
+    )
+  )
 )

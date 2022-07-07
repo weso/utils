@@ -1,8 +1,9 @@
-import sbtcrossproject.CrossProject
+// import sbtcrossproject.CrossProject
+// import com.jsuereth.sbtpgp.PgpKeys._   // for publishSigned
 
-lazy val scala212 = "2.12.15"
+lazy val scala212 = "2.12.16"
 lazy val scala213 = "2.13.8"
-lazy val scala3   = "3.1.2"
+lazy val scala3   = "3.1.3"
 lazy val supportedScalaVersions = List(
   scala3,
   scala213,
@@ -10,10 +11,10 @@ lazy val supportedScalaVersions = List(
 )
 
 // Dependency versions
-lazy val catsVersion        = "2.7.0"
-lazy val catsEffectVersion  = "3.3.11"
-lazy val circeVersion       = "0.14.1"
-lazy val fs2Version         = "3.2.7"
+lazy val catsVersion        = "2.8.0"
+lazy val catsEffectVersion  = "3.3.13"
+lazy val circeVersion       = "0.14.2"
+lazy val fs2Version         = "3.2.8"
 lazy val munitVersion       = "0.7.29"
 lazy val munitEffectVersion = "1.0.7"
 lazy val pprintVersion      = "0.7.3"
@@ -35,14 +36,14 @@ def priorTo2_13(scalaVersion: String): Boolean =
     case _                              => false
   }
 
-// val Java8  = "adopt@1.8"
 val Java11 = JavaSpec.temurin("11")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(Java11)
 
 lazy val utilsRoot =
-  crossProject(JVMPlatform)
-    .crossType(CrossType.Pure)
+  project
+    // crossProject(JVMPlatform)
+    // .crossType(CrossType.Pure)
     .in(file("."))
     .settings(commonSettings)
     .aggregate(typing, validating, utilsTest, utils, testsuite, docs)
@@ -50,6 +51,7 @@ lazy val utilsRoot =
       ThisBuild / turbo  := true,
       crossScalaVersions := Nil,
       publish / skip     := true,
+      // publishSigned / skip := true,
       ThisBuild / githubWorkflowBuild := Seq(
         WorkflowStep.Sbt(
           List(
@@ -84,99 +86,110 @@ lazy val typing =
       )
     )
 
-lazy val testsuite = crossProject(JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/testsuite"))
-  .dependsOn(utils)
-  .settings(commonSettings)
-  .settings(
-    crossScalaVersions := supportedScalaVersions,
-    libraryDependencies ++= Seq(
-      catsCore,
-      catsKernel,
-      catsEffect,
-      pprint
+lazy val testsuite =
+  project
+    // crossProject(JVMPlatform)
+    // .crossType(CrossType.Pure)
+    .in(file("modules/testsuite"))
+    .dependsOn(utils)
+    .settings(commonSettings)
+    .settings(
+      crossScalaVersions := supportedScalaVersions,
+      libraryDependencies ++= Seq(
+        catsCore,
+        catsKernel,
+        catsEffect,
+        pprint
+      )
     )
-  )
 
-lazy val utilsTest = crossProject(JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/utilsTest"))
-  .settings(commonSettings)
-  .settings(
-    crossScalaVersions := supportedScalaVersions,
-    libraryDependencies ++= Seq(
-      circeCore,
-      circeGeneric,
-      circeParser,
-      catsCore,
-      catsKernel
+lazy val utilsTest =
+  project
+    // crossProject(JVMPlatform)
+    // .crossType(CrossType.Pure)
+    .in(file("modules/utilsTest"))
+    .settings(commonSettings)
+    .settings(
+      crossScalaVersions := supportedScalaVersions,
+      libraryDependencies ++= Seq(
+        circeCore,
+        circeGeneric,
+        circeParser,
+        catsCore,
+        catsKernel
 //      diffsonCirce,
 //      xercesImpl,
 //      commonsText,
 //      scalaTest
+      )
     )
-  )
 
-lazy val validating = crossProject(JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/validating"))
-  .dependsOn(utils % "test -> test; compile -> compile")
-  .settings(commonSettings)
-  .settings(
-    crossScalaVersions := supportedScalaVersions,
-    libraryDependencies ++= Seq(
-      catsCore,
-      catsKernel
+lazy val validating =
+  project
+    // crossProject(JVMPlatform)
+    // .crossType(CrossType.Pure)
+    .in(file("modules/validating"))
+    .dependsOn(utils % "test -> test; compile -> compile")
+    .settings(commonSettings)
+    .settings(
+      crossScalaVersions := supportedScalaVersions,
+      libraryDependencies ++= Seq(
+        catsCore,
+        catsKernel
+      )
     )
-  )
 
-lazy val utils = crossProject(JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/utils"))
-  .settings(commonSettings)
-  .settings(
-    crossScalaVersions := supportedScalaVersions,
-    libraryDependencies ++= Seq(
-      circeCore,
-      circeGeneric,
-      circeParser,
-      catsCore,
-      catsKernel,
-      catsEffect,
-      fs2,
-      fs2io,
-      fs2,
-      fs2io,
-      pprint
+lazy val utils =
+  project
+    // crossProject(JVMPlatform)
+    // .withoutSuffixFor(JVMPlatform)
+    // .crossType(CrossType.Pure)
+    .in(file("modules/utils"))
+    .settings(commonSettings)
+    .settings(
+      crossScalaVersions := supportedScalaVersions,
+      libraryDependencies ++= Seq(
+        circeCore,
+        circeGeneric,
+        circeParser,
+        catsCore,
+        catsKernel,
+        catsEffect,
+        fs2,
+        fs2io,
+        fs2,
+        fs2io,
+        pprint
+      )
     )
-  )
 
-lazy val docs = crossProject(JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("utils-docs"))
-  .settings(
-    noPublishSettings,
-    mdocSettings,
-    ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(noDocProjects: _*)
-  )
-  .dependsOn(typing, validating, utilsTest, utils, testsuite)
-  .enablePlugins(MdocPlugin, DocusaurusPlugin, ScalaUnidocPlugin)
+// lazy val utilsJvm = utils.jvm
+// lazy val validatingJvm = validating.jvm
+// lazy val utilsTestJvm = utilsTest.jvm
+
+lazy val docs =
+  project
+    // crossProject(JVMPlatform)
+    // .crossType(CrossType.Pure)
+    .in(file("utils-docs"))
+    .settings(
+      noPublishSettings,
+      mdocSettings,
+      ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(noDocProjects: _*)
+    )
+    .dependsOn(typing, validating, utilsTest, utils, testsuite)
+    .enablePlugins(MdocPlugin, DocusaurusPlugin, ScalaUnidocPlugin)
 
 lazy val mdocSettings = Seq(
   mdocVariables := Map(
     "VERSION" -> version.value
   ),
-  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(utils.jvm),
+  ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(utils),
   ScalaUnidoc / unidoc / target              := (LocalRootProject / baseDirectory).value / "website" / "static" / "api",
   cleanFiles += (ScalaUnidoc / unidoc / target).value,
-  docusaurusCreateSite := docusaurusCreateSite
-    .dependsOn(Compile / unidoc)
-    .value,
+  docusaurusCreateSite := docusaurusCreateSite.dependsOn(Compile / unidoc).value,
   docusaurusPublishGhpages :=
-    docusaurusPublishGhpages
-      .dependsOn(Compile / unidoc)
-      .value,
+    docusaurusPublishGhpages.dependsOn(Compile / unidoc).value,
   ScalaUnidoc / unidoc / scalacOptions ++= Seq(
     "-doc-source-url",
     s"https://github.com/weso/utils/tree/v${(ThisBuild / version).value}€{FILE_PATH}.scala",
@@ -198,7 +211,7 @@ lazy val ghPagesSettings = Seq(
  **********************************************************/
 
 lazy val noDocProjects = Seq[ProjectReference](
-//   validating.
+  // validating
 )
 
 lazy val noPublishSettings = publish / skip := true
@@ -247,9 +260,7 @@ lazy val compilationSettings = Seq(
 )
 
 lazy val commonSettings = compilationSettings ++ sharedDependencies ++ Seq(
-  organization := "es.weso",
-  // sonatypeCredentialHost := "oss.sonatype.org",
-  // sonatypeRepository := "https://s01.oss.sonatype.org/service/local",
+  organization        := "es.weso",
   sonatypeProfileName := "es.weso",
   homepage            := Some(url("https://github.com/weso/utils")),
   licenses            := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),

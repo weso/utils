@@ -11,10 +11,11 @@ object DecoderUtils {
     val str: Decoder.Result[String] = c.downField(name).as[String]
     str match {
       case Left(e) => Left(e)
-      case Right(v) => if (v == value)
-        Either.right(v)
-      else
-        Either.left(DecodingFailure(s"Required $value for field $name but got $v", Nil))
+      case Right(v) =>
+        if (v == value)
+          Either.right(v)
+        else
+          Either.left(DecodingFailure(s"Required $value for field $name but got $v", Nil))
     }
   }
 
@@ -25,7 +26,7 @@ object DecoderUtils {
     val x = c.downField(name)
     if (x.succeeded) {
       x.as[A] match {
-        case Left(e) => Left(e)
+        case Left(e)  => Left(e)
         case Right(v) => Right(Some(v))
       }
     } else Either.right(None)
@@ -35,17 +36,15 @@ object DecoderUtils {
     val x = c.downField(name)
     if (x.succeeded) {
       x.as[Map[A, B]] match {
-        case Left(e) => Left(e)
+        case Left(e)  => Left(e)
         case Right(v) => Right(Some(v))
       }
     } else Either.right(None)
   }
 
-  /**
-   * Explicit mapDecoder which needs the key decoder as well as the value decoder
-   * It should not be needed, but I found some problems about implicits resolution which I solved by
-   * using this method
-   */
+  /** Explicit mapDecoder which needs the key decoder as well as the value decoder It should not be needed, but I found
+    * some problems about implicits resolution which I solved by using this method
+    */
   def mapDecoder[A, B](c: ACursor)(ka: KeyDecoder[A], db: Decoder[B]): Decoder.Result[Map[A, B]] = {
     implicit val ika = ka
     implicit val idb = db

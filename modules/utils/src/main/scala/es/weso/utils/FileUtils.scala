@@ -12,7 +12,11 @@ import cats.implicits._
 
 object FileUtils {
 
-  def getFilesFromFolderWithExt(path: String, ext: String, ignoreFiles: List[String]): IO[List[File]] = IO {
+  def getFilesFromFolderWithExt(
+      path: String,
+      ext: String,
+      ignoreFiles: List[String]
+  ): IO[List[File]] = IO {
     val d = new File(path)
     if (d.exists && d.isDirectory) {
       d.listFiles.filter { file =>
@@ -45,36 +49,6 @@ object FileUtils {
     (splits.init.mkString("."), splits.last)
   }
 
-  /** Ensures to close a file. Follows the [[https://wiki.scala-lang.org/display/SYGN/Loan Loan pattern]]
-    */
-  /* def using[A <: { def close(): Unit }, B](resource: A)(f: A => B): B = {
-    try {
-      f(resource)
-    } finally {
-      resource.close()
-    }
-  } */
-
-  /** Gets the contents of a file
-    *
-    * @param file
-    *   file
-    */
-  /*def getContents(file: File): EitherT[IO, String, CharSequence] = {
-    try {
-      using(Source.fromFile(file)("UTF-8")) { source =>
-        EitherT.pure[IO,String](source.getLines.mkString("\n"))
-      }
-    } catch {
-      case e: FileNotFoundException =>
-        EitherT.leftT[IO,CharSequence](s"Error reading file ${file.getAbsolutePath}: ${e.getMessage}")
-      case e: IOException =>
-        EitherT.leftT[IO,CharSequence](s"IO Exception reading file ${file.getAbsolutePath}: ${e.getMessage}")
-      case e: Exception =>
-        EitherT.leftT[IO,CharSequence](s"Exception reading file ${file.getAbsolutePath}: ${e.getMessage}")
-    }
-  }*/
-
   /** Gets the contents of a file
     *
     * @param fileName
@@ -96,23 +70,7 @@ object FileUtils {
       )
       with NoStackTrace
 
-  /*
-  def getContents(fileName: String): EitherT[IO, String, CharSequence] = {
-    try {
-      using(Source.fromFile(fileName)("UTF-8")) { source =>
-        EitherT.pure[IO,String](source.getLines.mkString("\n"))
-      }
-    } catch {
-      case e: FileNotFoundException =>
-       EitherT.leftT[IO,CharSequence](s"Error reading file ${fileName}: ${e.getMessage}")
-      case e: IOException =>
-       EitherT.leftT[IO,CharSequence](s"IO Exception reading file ${fileName}: ${e.getMessage}")
-      case e: Exception =>
-       EitherT.leftT[IO,CharSequence](s"Exception reading file ${fileName}: ${e.getMessage}")
-    }
-  } */
-
-  def getStream(fileName: String): Either[String, InputStreamReader] = {
+  def getStream(fileName: String): Either[String, InputStreamReader] =
     try {
       val source = Source.fromFile(fileName)("UTF-8")
       source.reader().asRight
@@ -124,7 +82,6 @@ object FileUtils {
       case e: Exception =>
         Left(s"Exception reading file ${fileName}: ${e.getMessage}")
     }
-  }
 
   /** Write contents to a file
     *
@@ -151,9 +108,8 @@ object FileUtils {
     * @return
     *   String with the line numbers of the char sequence
     */
-  def formatLines(cs: CharSequence): String = {
+  def formatLines(cs: CharSequence): String =
     cs.toString.linesIterator.zipWithIndex.map(p => (p._2 + 1).toString + " " + p._1).mkString("\n")
-  }
 
   lazy val currentFolderURL: String =
     Paths.get(".").normalize.toUri.toURL.toExternalForm

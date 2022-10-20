@@ -17,7 +17,7 @@ lazy val circeVersion       = "0.14.2"
 lazy val fs2Version         = "3.2.8"
 lazy val munitVersion       = "0.7.29"
 lazy val munitEffectVersion = "1.0.7"
-lazy val pprintVersion      = "0.7.3"
+lazy val pprintVersion      = "0.8.0"
 
 lazy val catsCore     = "org.typelevel" %% "cats-core"           % catsVersion
 lazy val catsKernel   = "org.typelevel" %% "cats-kernel"         % catsVersion

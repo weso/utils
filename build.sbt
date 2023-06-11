@@ -1,7 +1,7 @@
 // import sbtcrossproject.CrossProject
 // import com.jsuereth.sbtpgp.PgpKeys._   // for publishSigned
 
-lazy val scala212 = "2.12.16"
+lazy val scala212 = "2.12.18"
 lazy val scala213 = "2.13.8"
 lazy val scala3   = "3.1.3"
 lazy val supportedScalaVersions = List(
